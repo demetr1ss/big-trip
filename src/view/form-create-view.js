@@ -1,8 +1,9 @@
 import {createElement} from '../render.js';
 
 const createFormTemplate = () => (
-  `<li class="trip-events__item">
-    <form class="event event--edit" action="#" method="post">
+  `<ul class="trip-events__list">
+    <li class="trip-events__item">
+        <form class="event event--edit" action="#" method="post">
             <header class="event__header">
                 <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -160,9 +161,10 @@ const createFormTemplate = () => (
                         </div>
                     </div>
                     </section>
-            </section>
-        </form>
-    </li>`
+                </section>
+            </form>
+        </li>
+    </ul>`
 );
 
 export default class FormCreateView {
