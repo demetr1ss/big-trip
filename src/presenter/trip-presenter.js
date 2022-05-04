@@ -14,7 +14,7 @@ export default class TripPresenter {
 
     render(new SortView(), this.container);
     render(this.componentList, this.container);
-    render(new FormEditView(this.eventList[1]), this.componentList.getElement());
+    render(new FormEditView(this.eventList[0]), this.componentList.getElement());
 
     Array.from(this.eventList, (item) => render(new EventView(item), this.componentList.getElement()));
   };

@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
 
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -7,40 +9,28 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+export const getRandomArrayElement = (arr) => arr[getRandomInteger(0, arr.length - 1)];
+
 export const formatDate = (date, format) => dayjs(date).format(format);
 
-export const humanizeTime = (date) => dayjs(date).format('HH:mm');
+const setTimeFormat = (item) => String(item).padStart(2, '0');
 
 export const getDurationTime = (dateFrom, dateTo) => {
-  dateTo = dayjs(dateTo).format('YYYY-MM-DDTHH:mm');
-  let minutes = dayjs(dateTo).diff(dateFrom, 'minutes', true);
-  let hours = Math.floor(minutes / 60);
-  minutes = Math.ceil(minutes - (hours * 60));
+  const endDate = dayjs(dateTo);
+  const startDate = dayjs(dateFrom);
+  const timeDuration = dayjs.duration(endDate.diff(startDate));
+  let {days, hours, minutes} = timeDuration.$d;
+  days = setTimeFormat(days);
+  hours = setTimeFormat(hours);
+  minutes = setTimeFormat(minutes);
 
-  if (minutes === 60) {
-    hours++;
-    minutes = 0;
-  }
-
-  if (`${minutes}`.length < 2) {
-    minutes = `0${minutes}`;
-  }
-
-  if (`${hours}`.length < 2) {
-    hours = `0${hours}`;
-  }
-
-  if (hours >= 24) {
-    let days = Math.floor(hours / 24);
-    hours = hours - (days * 24);
-
-    if (`${days}`.length < 2) {
-      days = `0${days}`;
-    }
-
+  if (days > 0) {
     return `${days}D ${hours}H ${minutes}M`;
   }
 
-  return `${hours}H ${minutes}M`;
-};
+  if (hours > 0) {
+    return `${hours}H ${minutes}M`;
+  }
 
+  return `${minutes}M`;
+};

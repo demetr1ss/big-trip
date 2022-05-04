@@ -1,6 +1,6 @@
 export const OFFER_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-export const allOffers = [
+export const ALL_OFFERS = [
   {
     type: 'taxi',
     offers: [
