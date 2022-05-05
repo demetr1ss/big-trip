@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
@@ -16,7 +17,15 @@ export const formatDate = (date, format) => dayjs(date).format(format);
 export const getDurationTime = (dateFrom, dateTo) => {
   const endDate = dayjs(dateTo);
   const startDate = dayjs(dateFrom);
-  const timeDuration = dayjs.duration(endDate.diff(startDate)).format('DD[D] HH[H] mm[M]');
+  const timeDuration = dayjs.duration(endDate.diff(startDate));
 
-  return timeDuration;
+  if (timeDuration.$d.days > 0) {
+    return timeDuration.format('DD[D] HH[H] mm[M]');
+  }
+
+  if (timeDuration.$d.hours > 0) {
+    return timeDuration.format('HH[H] mm[M]');
+  }
+
+  return timeDuration.format('mm[M]');
 };
