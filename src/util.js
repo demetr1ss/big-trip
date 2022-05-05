@@ -13,24 +13,10 @@ export const getRandomArrayElement = (arr) => arr[getRandomInteger(0, arr.length
 
 export const formatDate = (date, format) => dayjs(date).format(format);
 
-const setTimeFormat = (item) => String(item).padStart(2, '0');
-
 export const getDurationTime = (dateFrom, dateTo) => {
   const endDate = dayjs(dateTo);
   const startDate = dayjs(dateFrom);
-  const timeDuration = dayjs.duration(endDate.diff(startDate));
-  let {days, hours, minutes} = timeDuration.$d;
-  days = setTimeFormat(days);
-  hours = setTimeFormat(hours);
-  minutes = setTimeFormat(minutes);
+  const timeDuration = dayjs.duration(endDate.diff(startDate)).format('DD[D] HH[H] mm[M]');
 
-  if (days > 0) {
-    return `${days}D ${hours}H ${minutes}M`;
-  }
-
-  if (hours > 0) {
-    return `${hours}H ${minutes}M`;
-  }
-
-  return `${minutes}M`;
+  return timeDuration;
 };
