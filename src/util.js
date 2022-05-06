@@ -18,13 +18,15 @@ export const getDurationTime = (dateFrom, dateTo) => {
   const startDate = dayjs(dateFrom);
   const timeDuration = dayjs.duration(endDate.diff(startDate));
 
-  if (timeDuration.$d.days > 0) {
+  if (timeDuration.days() > 0) {
     return timeDuration.format('DD[D] HH[H] mm[M]');
   }
 
-  if (timeDuration.$d.hours > 0) {
+  if (timeDuration.hours() > 0) {
     return timeDuration.format('HH[H] mm[M]');
   }
 
   return timeDuration.format('mm[M]');
 };
+
+export const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
