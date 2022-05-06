@@ -3,11 +3,8 @@ import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import FormEditView from '../view/form-edit-view.js';
 import NoEventView from '../view/no-event-view.js';
-import TripInfoView from '../view/trip-info-view.js';
-import { render, RenderPosition } from '../render.js';
+import { render,  } from '../render.js';
 import { isEscapeKey } from '../util.js';
-
-const tripMainContainer = document.querySelector('.trip-main');
 export default class TripPresenter {
   #container = null;
   #eventModel = null;
@@ -23,7 +20,7 @@ export default class TripPresenter {
 
   init = () => {
     this.#eventList = [...this.#eventModel.points];
-    this.#renderEvents();
+    this.#renderTrip();
   };
 
   #renderEvent = (item) => {
@@ -65,7 +62,7 @@ export default class TripPresenter {
     render(eventComponent, this.#componentList.element);
   };
 
-  #renderEvents = () => {
+  #renderTrip = () => {
     if (!this.#eventList.length) {
       render(new NoEventView(), this.#container);
       return;
@@ -73,7 +70,7 @@ export default class TripPresenter {
 
     render(new SortView(), this.#container);
     render(this.#componentList, this.#container);
-    Array.from(this.#eventList, (item) => this.#renderEvent(item));
-    render(new TripInfoView(), tripMainContainer, RenderPosition.AFTERBEGIN);
+
+    this.#eventList.forEach(this.#renderEvent);
   };
 }
