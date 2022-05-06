@@ -136,23 +136,26 @@ const createFormEditTemplate = (event) => {
 };
 
 export default class FormEditView {
+  #event = null;
+  #element = null;
+
   constructor(event) {
-    this.event = event;
+    this.#event = event;
   }
 
-  getTemplate() {
-    return createFormEditTemplate(this.event);
+  get template() {
+    return createFormEditTemplate(this.#event);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
