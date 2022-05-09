@@ -58,6 +58,11 @@ export default class TripPresenter {
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
+    formEditComponent.setDeleteClickHandler(() => {
+      replaceFormToEvent();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
     render(eventComponent, this.#componentList.element);
   };
 

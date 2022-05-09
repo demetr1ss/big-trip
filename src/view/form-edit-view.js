@@ -157,6 +157,16 @@ export default class FormEditView extends AbstractView {
     this._callback.formSubmit();
   };
 
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+  };
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick();
+  };
+
   setEditClickHandler = (callback) => {
     this._callback.editClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
