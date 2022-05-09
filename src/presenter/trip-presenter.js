@@ -3,7 +3,7 @@ import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import FormEditView from '../view/form-edit-view.js';
 import NoEventView from '../view/no-event-view.js';
-import { render,  } from '../render.js';
+import { render, replace } from '../framework/render.js';
 import { isEscapeKey } from '../util.js';
 export default class TripPresenter {
   #container = null;
@@ -28,11 +28,11 @@ export default class TripPresenter {
     const formEditComponent = new FormEditView(item);
 
     const replaceEventToForm = () => {
-      this.#componentList.element.replaceChild(formEditComponent.element, eventComponent.element);
+      replace(formEditComponent, eventComponent);
     };
 
     const replaceFormToEvent = () => {
-      this.#componentList.element.replaceChild(eventComponent.element, formEditComponent.element);
+      replace(eventComponent, formEditComponent);
     };
 
     const onEscKeyDown = (evt) => {
@@ -43,18 +43,22 @@ export default class TripPresenter {
       }
     };
 
-    eventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    eventComponent.setEditClickHandler(() => {
       replaceEventToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    formEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    formEditComponent.setEditClickHandler(() => {
       replaceFormToEvent();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    formEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    formEditComponent.setFormSubmitHandler(() => {
+      replaceFormToEvent();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    formEditComponent.setDeleteClickHandler(() => {
       replaceFormToEvent();
       document.removeEventListener('keydown', onEscKeyDown);
     });
