@@ -36,7 +36,7 @@ export default class TripPresenter {
     };
 
     const onEscKeyDown = (evt) => {
-      if (isEscapeKey) {
+      if (isEscapeKey(evt)) {
         evt.preventDefault();
         replaceFormToEvent();
         document.removeEventListener('keydown', onEscKeyDown);
