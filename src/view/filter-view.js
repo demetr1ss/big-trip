@@ -6,7 +6,14 @@ const createFilterTemplate = () => (
   `<form class="trip-filters" action="#" method="get">
     ${FILTER_VALUES.map((value) =>
     `<div class="trip-filters__filter">
-      <input id="filter-${value}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${value}">
+      <input
+       id="filter-${value}"
+       class="trip-filters__filter-input  visually-hidden"
+       type="radio" 
+       name="trip-filter" 
+       value="${value}"
+       ${value === 'everything' ? 'checked' : ''}
+      >
       <label class="trip-filters__filter-label" for="filter-${value}">${value}</label>
     </div>`).join('')}
       <button class="visually-hidden" type="submit">Accept filter</button>
