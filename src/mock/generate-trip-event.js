@@ -1,5 +1,6 @@
 import { getRandomInteger, getRandomArrayElement } from '../util.js';
 import { OFFER_TYPES, ALL_OFFERS, CITIES, DESCRIPTIONS, START_DATES, END_DATES } from './mock-data.js';
+import { nanoid } from 'nanoid';
 
 export const generateTripEvent = () => {
   const type = getRandomArrayElement(OFFER_TYPES);
@@ -19,7 +20,7 @@ export const generateTripEvent = () => {
         }
       ]
     },
-    id: getRandomInteger(0, 1000),
+    id: nanoid(),
     isFavorite: Boolean(getRandomInteger()),
     offers: eventOffers?.offers || [],
     type,

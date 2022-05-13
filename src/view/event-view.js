@@ -71,9 +71,9 @@ const createEventTemplate = (point) => {
 export default class EventView extends AbstractView {
   #event = null;
 
-  constructor(event) {
+  constructor(item) {
     super();
-    this.#event = event;
+    this.#event = item;
   }
 
   get template() {
@@ -88,4 +88,15 @@ export default class EventView extends AbstractView {
   #editClickHandler = () => {
     this._callback.editClick();
   };
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  };
+
 }
