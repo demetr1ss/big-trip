@@ -44,3 +44,7 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+
+export const isDateExpired = (dueDate) => dueDate && dayjs().isAfter(dueDate, 'D');
+
+export const isToday = (dueDate) => dayjs().isSame(dueDate, 'D');

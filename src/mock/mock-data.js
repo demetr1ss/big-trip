@@ -77,6 +77,6 @@ export const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Moscow'];
 
 export const DESCRIPTIONS = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Cras aliquet varius magna, non porta ligula feugiat eget.', 'Fusce tristique felis at fermentum pharetra.', 'Aliquam id orci ut lectus varius viverra.', 'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.', 'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.', 'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.', 'Sed sed nisi sed augue convallis suscipit in sed felis.', 'Aliquam erat volutpat.', 'Nunc fermentum tortor ac porta dapibus.', 'In rutrum ac purus sit amet tempus.'];
 
-export const START_DATES = ['2019-07-10T05:55:35.845Z', '2019-07-07T12:03:12.845Z', '2019-07-12T23:02:13.845Z', '2019-07-13T13:15:44.845Z', '2019-07-09T19:00:33.845Z'];
+export const START_DATES = ['2022-05-13T05:55:35.845Z', '2022-05-14T12:03:12.845Z', '2022-05-14T23:02:13.845Z', '2022-05-15T13:15:44.845Z', '2022-05-15T19:00:33.845Z'];
 
-export const END_DATES = ['2019-07-14T19:55:55.845Z', '2019-07-14T12:03:13.845Z', '2019-07-15T16:02:22.845Z', '2019-07-14T23:15:55.845Z', '2019-07-15T07:00:55.845Z'];
+export const END_DATES = ['2022-05-13T19:55:55.845Z', '2022-05-16T12:03:13.845Z', '2022-05-17T16:02:22.845Z', '2022-05-16T23:15:55.845Z', '2022-05-17T07:00:55.845Z'];
