@@ -1,17 +1,19 @@
-import EventView from '../view/event-view.js';
+import EventPresenter from './event-presenter.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
-import FormEditView from '../view/form-edit-view.js';
 import NoEventView from '../view/no-event-view.js';
-import { render, replace } from '../framework/render.js';
-import { isEscapeKey } from '../util.js';
+import { render } from '../framework/render.js';
+import { updateItem } from '../util.js';
 export default class TripPresenter {
   #container = null;
   #eventModel = null;
 
   #componentList = new EventListView();
+  #sortComponent = new SortView();
+  #noEventComponent = new NoEventView();
 
   #eventList = [];
+  #eventPresenter = new Map();
 
   constructor(container, eventModel) {
     this.#container = container;
@@ -23,57 +25,46 @@ export default class TripPresenter {
     this.#renderTrip();
   };
 
+  #handleModeChange = () => {
+    this.#eventPresenter.forEach((presenter) => presenter.resetView());
+  };
+
+  #handleEventChange = (updatedEvent) => {
+    this.#eventList = updateItem(this.#eventList, updatedEvent);
+    this.#eventPresenter.get(updatedEvent.id).init(updatedEvent);
+  };
+
+  #renderSort = () => {
+    render(this.#sortComponent, this.#container);
+  };
+
+  #renderComponentList = () => {
+    render(this.#componentList, this.#container);
+  };
+
+  #renderNoEvents = () => {
+    render(this.#noEventComponent, this.#container);
+  };
+
   #renderEvent = (item) => {
-    const eventComponent = new EventView(item);
-    const formEditComponent = new FormEditView(item);
+    const eventPresenter = new EventPresenter(this.#componentList.element, this.#handleEventChange, this.#handleModeChange);
+    eventPresenter.init(item);
+    this.#eventPresenter.set(item.id, eventPresenter);
+  };
 
-    const replaceEventToForm = () => {
-      replace(formEditComponent, eventComponent);
-    };
-
-    const replaceFormToEvent = () => {
-      replace(eventComponent, formEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (isEscapeKey(evt)) {
-        evt.preventDefault();
-        replaceFormToEvent();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    eventComponent.setEditClickHandler(() => {
-      replaceEventToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    formEditComponent.setEditClickHandler(() => {
-      replaceFormToEvent();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    formEditComponent.setFormSubmitHandler(() => {
-      replaceFormToEvent();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    formEditComponent.setDeleteClickHandler(() => {
-      replaceFormToEvent();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    render(eventComponent, this.#componentList.element);
+  #clearEventList = () => {
+    this.#eventPresenter.forEach((presenter) => presenter.destroy());
+    this.#eventPresenter.clear();
   };
 
   #renderTrip = () => {
     if (!this.#eventList.length) {
-      render(new NoEventView(), this.#container);
+      this.#renderNoEvents();
       return;
     }
 
-    render(new SortView(), this.#container);
-    render(this.#componentList, this.#container);
+    this.#renderSort();
+    this.#renderComponentList();
 
     this.#eventList.forEach(this.#renderEvent);
   };

@@ -111,9 +111,9 @@ const createFormEditTemplate = (event) => {
 export default class FormEditView extends AbstractView {
   #event = null;
 
-  constructor(event) {
+  constructor(item) {
     super();
-    this.#event = event;
+    this.#event = item;
   }
 
   get template() {
@@ -127,7 +127,7 @@ export default class FormEditView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this.#event);
   };
 
   setDeleteClickHandler = (callback) => {
