@@ -1,12 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-
-export const SortType = {
-  DEFAULT: 'day',
-  EVENT: 'event',
-  TIME: 'time',
-  PRICE: 'price',
-  OFFER: 'offer',
-};
+import { SortType } from '../utils/sorting.js';
 
 const createSortTemplate = () =>
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
