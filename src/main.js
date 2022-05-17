@@ -2,7 +2,7 @@ import TripInfoView from './view/trip-info-view.js';
 import FilterView from './view/filter-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import EventsModel from './model/event-model.js';
-import { generateFilter } from './mock/filters.js';
+import { generateFilter } from './utils/filters.js';
 import { render, RenderPosition } from './framework/render.js';
 
 const tripMainContainer = document.querySelector('.trip-main');

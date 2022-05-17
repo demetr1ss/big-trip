@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomArrayElement } from '../util.js';
+import { getRandomInteger, getRandomArrayElement } from '../utils/common.js';
 import { OFFER_TYPES, ALL_OFFERS, CITIES, DESCRIPTIONS, START_DATES, END_DATES } from './mock-data.js';
 import { nanoid } from 'nanoid';
 

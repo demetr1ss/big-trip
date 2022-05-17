@@ -1,6 +1,6 @@
 
 import { render, replace, remove } from '../framework/render.js';
-import { isEscapeKey } from '../util.js';
+import { isEscapeKey } from '../utils/common.js';
 import FormEditView from '../view/form-edit-view.js';
 import EventView from '../view/event-view.js';
 

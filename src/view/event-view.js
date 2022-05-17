@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { formatDate, getDurationTime } from '../util.js';
+import { formatDate, getDurationTime } from '../utils/date.js';
 
 const createEventTemplate = (point) => {
   const {
