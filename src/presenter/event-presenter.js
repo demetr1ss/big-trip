@@ -8,6 +8,7 @@ const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
+
 export default class EventPresenter {
   #eventComponent = null;
   #formEditComponent = null;
@@ -52,7 +53,7 @@ export default class EventPresenter {
         replace(this.#formEditComponent, prevFormEditComponent);
         break;
       default:
-        throw new Error('Mode undefined');
+        throw new Error(`${this.#mode} unknown`);
     }
 
     remove(prevEventComponent);

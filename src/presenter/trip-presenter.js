@@ -1,9 +1,10 @@
 import EventPresenter from './event-presenter.js';
-import SortView from '../view/sort-view.js';
+import SortView, { SortType } from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import { render } from '../framework/render.js';
-import { updateItem } from '../util.js';
+import { updateItem, sortEventsByDay, sortEventsByPrice, sortEventsByTime } from '../util.js';
+
 export default class TripPresenter {
   #container = null;
   #eventModel = null;
@@ -15,6 +16,9 @@ export default class TripPresenter {
   #eventList = [];
   #eventPresenter = new Map();
 
+  #currentSortType = SortType.DAY;
+  #sourcedEventList = [];
+
   constructor(container, eventModel) {
     this.#container = container;
     this.#eventModel = eventModel;
@@ -22,6 +26,8 @@ export default class TripPresenter {
 
   init = () => {
     this.#eventList = [...this.#eventModel.points];
+    this.#sourcedEventList = [...this.#eventModel.points];
+
     this.#renderTrip();
   };
 
@@ -31,11 +37,44 @@ export default class TripPresenter {
 
   #handleEventChange = (updatedEvent) => {
     this.#eventList = updateItem(this.#eventList, updatedEvent);
+    this.#sourcedEventList = updateItem(this.#sourcedEventList, updatedEvent);
     this.#eventPresenter.get(updatedEvent.id).init(updatedEvent);
+  };
+
+  #sortEvents = (sortType) => {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#eventList.sort(sortEventsByDay);
+        break;
+
+      case SortType.TIME:
+        this.#eventList.sort(sortEventsByTime);
+        break;
+
+      case SortType.PRICE:
+        this.#eventList.sort(sortEventsByPrice);
+        break;
+
+      default:
+        this.#eventList = [...this.#sourcedEventList];
+    }
+
+    this.#currentSortType = sortType;
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortEvents(sortType);
+    this.#clearEventList();
+    this.#renderComponentList();
   };
 
   #renderSort = () => {
     render(this.#sortComponent, this.#container);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #renderComponentList = () => {
