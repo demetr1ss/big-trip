@@ -3,7 +3,12 @@ import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import { render } from '../framework/render.js';
-import { sortEventsDefault, sortEventsByPrice, sortEventsByTime, SortType } from '../utils/sorting.js';
+import {
+  sortEventsDefault,
+  sortEventsByPrice,
+  sortEventsByTime,
+  SortType
+} from '../utils/sorting.js';
 import { updateItem } from '../utils/common.js';
 
 export default class TripPresenter {

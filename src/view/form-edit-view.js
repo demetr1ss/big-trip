@@ -20,9 +20,20 @@ const createFormEditTemplate = (event) => {
       <div class="event__type-wrapper">
        <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
          <span class="visually-hidden">Choose event type</span>
-         <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+         <img
+          class="event__type-icon"
+          width="17" 
+          height="17"
+          src="img/icons/${type}.png" 
+          alt="Event type icon"
+         >
        </label>
-       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+       <input
+        class="event__type-toggle
+        visually-hidden" 
+        id="event-type-toggle-${id}" 
+        type="checkbox"
+       >
 
        <div class="event__type-list">
         <fieldset class="event__type-group">
@@ -36,7 +47,13 @@ const createFormEditTemplate = (event) => {
            value="${item}"
            ${item === type ? 'checked' : ''}
          >
-         <label class="event__type-label  event__type-label--${item}" for="event-type-${item}-${id}">${item}</label>
+         <label
+          class="event__type-label  
+          event__type-label--${item}" 
+          for="event-type-${item}-${id}"
+         >
+            ${item}
+         </label>
       </div>`
     )).join ('')}
         </fieldset>
@@ -61,10 +78,22 @@ const createFormEditTemplate = (event) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-${id}">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${formatDate(dateFrom,'DD/MM/YY HH:mm')}">
+        <input
+         class="event__input  event__input--time" 
+         id="event-start-time-${id}" 
+         type="text" 
+         name="event-start-time" 
+         value="${formatDate(dateFrom,'DD/MM/YY HH:mm')}"
+        >
           &mdash;
         <label class="visually-hidden" for="event-end-time-${id}">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${formatDate(dateTo,'DD/MM/YY HH:mm')}">
+        <input
+         class="event__input  event__input--time"
+          id="event-end-time-${id}"
+          type="text"
+          name="event-end-time"
+          value="${formatDate(dateTo,'DD/MM/YY HH:mm')}"
+        >
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -72,7 +101,13 @@ const createFormEditTemplate = (event) => {
           <span class="visually-hidden">Price</span>
             &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
+        <input 
+          class="event__input  event__input--price" 
+          id="event-price-${id}" 
+          type="text" 
+          name="event-price" 
+          value="${basePrice}"
+        >
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -89,7 +124,13 @@ const createFormEditTemplate = (event) => {
         <div class="event__available-offers">
         ${offers.map(({title, price}) =>
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-${id}" type="checkbox" name="event-offer-${title}" checked>
+        <input
+         class="event__offer-checkbox  visually-hidden" 
+         id="event-offer-${title}-${id}" 
+         type="checkbox" 
+         name="event-offer-${title}" 
+         checked
+        >
         <label class="event__offer-label" for="event-offer-${title}-${id}">
           <span class="event__offer-title">Add ${title}</span>
             &plus;&euro;&nbsp;
@@ -122,7 +163,8 @@ export default class FormEditView extends AbstractView {
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
   };
 
   #formSubmitHandler = (evt) => {
@@ -132,7 +174,8 @@ export default class FormEditView extends AbstractView {
 
   setDeleteClickHandler = (callback) => {
     this._callback.deleteClick = callback;
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#deleteClickHandler);
   };
 
   #deleteClickHandler = (evt) => {
@@ -142,7 +185,8 @@ export default class FormEditView extends AbstractView {
 
   setEditClickHandler = (callback) => {
     this._callback.editClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   };
 
   #editClickHandler = () => {
