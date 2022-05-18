@@ -1,4 +1,4 @@
-import { isDateExpired, isToday } from '../util.js';
+import { isDateExpired, isToday } from './date.js';
 
 const FilterType = {
   EVERYTHING : 'everything',

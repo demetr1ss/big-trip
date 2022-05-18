@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { formatDate } from '../util.js';
+import { formatDate } from '../utils/date.js';
 import { OFFER_TYPES, CITIES } from '../mock/mock-data.js';
 
 const createFormEditTemplate = (event) => {
