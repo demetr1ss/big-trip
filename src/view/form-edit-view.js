@@ -1,6 +1,7 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatDate } from '../utils/date.js';
 import { OFFER_TYPES, CITIES } from '../mock/mock-data.js';
+import { eventOffers } from '../mock/generate-trip-event.js';
 
 const createFormEditTemplate = (event) => {
   const {
@@ -12,6 +13,8 @@ const createFormEditTemplate = (event) => {
     offers,
     id
   } = event;
+
+  const choisenOptions = eventOffers(type).offers;
 
   return (
     `<li class="trip-events__item">
@@ -118,28 +121,35 @@ const createFormEditTemplate = (event) => {
      </header>
 
      <section class="event__details">
-      <section class="event__section  event__section--offers">
+      ${!choisenOptions.length ? '' :
+      `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-      
         <div class="event__available-offers">
-        ${offers.map(({title, price}) =>
-      `<div class="event__offer-selector">
+
+      ${choisenOptions.map((item) => {
+      const checked = offers.includes(item.id) ? 'checked' : '';
+
+      return (
+        `<div class="event__offer-selector">
         <input
          class="event__offer-checkbox  visually-hidden" 
-         id="event-offer-${title}-${id}" 
+         id="event-offer-${item.title}-${item.id}" 
          type="checkbox" 
-         name="event-offer-${title}" 
-         checked
+         name="event-offer-${item.title}" 
+         ${checked}
         >
-        <label class="event__offer-label" for="event-offer-${title}-${id}">
-          <span class="event__offer-title">Add ${title}</span>
+        <label class="event__offer-label" for="event-offer-${item.title}-${item.id}">
+          <span class="event__offer-title">Add ${item.title}</span>
             &plus;&euro;&nbsp;
-          <span class="event__offer-price">${price}</span>
+          <span class="event__offer-price">${item.price}</span>
         </label>
-        </div>`).join('')}
+        </div>`
+      );
+    }
+    ).join('')}
        </div>
-      </section>
-
+      </section>`
+    }
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destination.description}</p>
@@ -149,16 +159,15 @@ const createFormEditTemplate = (event) => {
   </li>`);
 };
 
-export default class FormEditView extends AbstractView {
-  #event = null;
+export default class FormEditView extends AbstractStatefulView {
 
   constructor(item) {
     super();
-    this.#event = item;
+    this._state = FormEditView.parseEventToState(item);
   }
 
   get template() {
-    return createFormEditTemplate(this.#event);
+    return createFormEditTemplate(this._state);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -169,7 +178,7 @@ export default class FormEditView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#event);
+    this._callback.formSubmit(FormEditView.parseStateToEvent(this._state));
   };
 
   setDeleteClickHandler = (callback) => {
@@ -192,4 +201,25 @@ export default class FormEditView extends AbstractView {
   #editClickHandler = () => {
     this._callback.editClick();
   };
+
+  _restoreHandlers = () => {};
+
+
+  static parseEventToState = (item) => ({...item,
+    isHasOffer: item.offers !== null,
+
+  });
+
+  static parseStateToEvent = (state) => {
+    const item = {...state};
+
+    if (!item.isHasOffer) {
+      item.offers = null;
+    }
+
+    delete item.isHasOffer;
+
+    return item;
+  };
+
 }

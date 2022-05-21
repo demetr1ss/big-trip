@@ -2,9 +2,21 @@ import { getRandomInteger, getRandomArrayElement } from '../utils/common.js';
 import { OFFER_TYPES, ALL_OFFERS, CITIES, DESCRIPTIONS, START_DATES, END_DATES } from './mock-data.js';
 import { nanoid } from 'nanoid';
 
+export const eventOffers = (type) => ALL_OFFERS.find((offer) => offer.type === type);
+
 export const generateTripEvent = () => {
   const type = getRandomArrayElement(OFFER_TYPES);
-  const eventOffers = ALL_OFFERS.find((offer) => offer.type === type);
+
+  const getOffersIds = () => {
+    const offers = eventOffers(type).offers;
+    const ids = [];
+
+    offers.forEach((item) => {
+      ids.push(item.id);
+    });
+
+    return ids;
+  };
 
   return ({
     basePrice: getRandomInteger(200, 1000),
@@ -22,7 +34,8 @@ export const generateTripEvent = () => {
     },
     id: nanoid(),
     isFavorite: Boolean(getRandomInteger()),
-    offers: eventOffers?.offers || [],
+    offers: getOffersIds(),
     type,
   });
 };
+

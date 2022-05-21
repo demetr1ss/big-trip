@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, getDurationTime } from '../utils/date.js';
+import { eventOffers } from '../mock/generate-trip-event.js';
 
 const createEventTemplate = (point) => {
   const {
@@ -8,9 +9,11 @@ const createEventTemplate = (point) => {
     type,
     dateFrom,
     dateTo,
+    offers,
     isFavorite,
-    offers
   } = point;
+
+  const choisenOptions = eventOffers(type).offers;
 
   const favoriteClassName = isFavorite ?
     'event__favorite-btn  event__favorite-btn--active':
@@ -54,12 +57,14 @@ const createEventTemplate = (point) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
      <ul class="event__selected-offers">
-     ${offers?.map(({title, price}) => (
-      `<li class="event__offer">
-       <span class="event__offer-title">${title}</span>
+     ${choisenOptions.map(
+      (item) => offers.includes(item.id) ?
+        `<li class="event__offer">
+       <span class="event__offer-title">${item.title}</span>
           &plus;&euro;&nbsp;
-       <span class="event__offer-price">${price}</span>
-      </li>`)).join('') || ''}
+       <span class="event__offer-price">${item.price}</span>
+      </li>`: '')
+      .join('')}
      </ul>
      <button class="${favoriteClassName}" type="button">
      <span class="visually-hidden">Add to favorite</span>
