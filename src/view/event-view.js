@@ -57,13 +57,13 @@ const createEventTemplate = (point) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
      <ul class="event__selected-offers">
-     ${choisenOptions.map(
-      (item) => offers.includes(item.id) ?
-        `<li class="event__offer">
+     ${choisenOptions.map((item) => offers.includes(item.id)
+      ? `<li class="event__offer">
        <span class="event__offer-title">${item.title}</span>
           &plus;&euro;&nbsp;
        <span class="event__offer-price">${item.price}</span>
-      </li>`: '')
+      </li>`
+      : '' )
       .join('')}
      </ul>
      <button class="${favoriteClassName}" type="button">

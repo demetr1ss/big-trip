@@ -54,6 +54,7 @@ const createFormEditTemplate = (event) => {
           class="event__type-label  
           event__type-label--${item}" 
           for="event-type-${item}-${id}"
+          data-type=${item}
          >
             ${item}
          </label>
@@ -121,7 +122,7 @@ const createFormEditTemplate = (event) => {
      </header>
 
      <section class="event__details">
-      ${!choisenOptions.length ? '' :
+      ${ !choisenOptions.length ? '' :
       `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
@@ -131,25 +132,24 @@ const createFormEditTemplate = (event) => {
 
       return (
         `<div class="event__offer-selector">
-        <input
-         class="event__offer-checkbox  visually-hidden" 
-         id="event-offer-${item.title}-${item.id}" 
-         type="checkbox" 
-         name="event-offer-${item.title}" 
-         ${checked}
-        >
-        <label class="event__offer-label" for="event-offer-${item.title}-${item.id}">
-          <span class="event__offer-title">Add ${item.title}</span>
+          <input
+            class="event__offer-checkbox  visually-hidden" 
+            id="event-offer-${item.title}-${item.id}" 
+            type="checkbox" 
+            name="event-offer-${item.title}" 
+            ${checked}
+          >
+          <label class="event__offer-label" for="event-offer-${item.title}-${item.id}">
+            <span class="event__offer-title">Add ${item.title}</span>
             &plus;&euro;&nbsp;
-          <span class="event__offer-price">${item.price}</span>
-        </label>
+            <span class="event__offer-price">${item.price}</span>
+          </label>
         </div>`
       );
-    }
-    ).join('')}
+    }).join('')}
        </div>
-      </section>`
-    }
+      </section>` }
+
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destination.description}</p>
@@ -161,9 +161,10 @@ const createFormEditTemplate = (event) => {
 
 export default class FormEditView extends AbstractStatefulView {
 
-  constructor(item) {
+  constructor(data) {
     super();
-    this._state = FormEditView.parseEventToState(item);
+    this._state = FormEditView.parseDataToState(data);
+    this.#setInnerHandlers();
   }
 
   get template() {
@@ -178,7 +179,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(FormEditView.parseStateToEvent(this._state));
+    this._callback.formSubmit(FormEditView.parseStateToData(this._state));
   };
 
   setDeleteClickHandler = (callback) => {
@@ -198,28 +199,68 @@ export default class FormEditView extends AbstractStatefulView {
       .addEventListener('click', this.#editClickHandler);
   };
 
-  #editClickHandler = () => {
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
     this._callback.editClick();
   };
 
-  _restoreHandlers = () => {};
-
-
-  static parseEventToState = (item) => ({...item,
-    isHasOffer: item.offers !== null,
-
-  });
-
-  static parseStateToEvent = (state) => {
-    const item = {...state};
-
-    if (!item.isHasOffer) {
-      item.offers = null;
-    }
-
-    delete item.isHasOffer;
-
-    return item;
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+    this.setEditClickHandler(this._callback.editClick);
   };
 
+
+  static parseDataToState = (data) => ({...data,
+    // basePriceState: data.basePrice,
+    // dateFromState: data.dateFrom,
+    // dateToState: data.dataTo,
+    // typeState: data.type,
+    // destinationState: data.destination,
+    offersState: data.offers,
+  });
+
+  static parseStateToData = (state) => {
+    const data = {...state};
+
+    // delete data.basePriceState;
+    // delete data.dateFromState;
+    // delete data.dateToState;
+    // delete data.typeState;
+    // delete data.destinationState;
+    delete data.offersState;
+
+    return data;
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-list')
+      .addEventListener('click', this.#changeTypeClickHandler);
+
+    this.element.querySelector('.event__input--price')
+      .addEventListener('input', this.#changePriceInputHandler);
+  };
+
+  #changePriceInputHandler = (evt) => {
+    evt.preventDefault();
+    const basePrice = evt.target.value;
+    this._setState({
+      basePrice
+    });
+  };
+
+  #changeTypeClickHandler = (evt) => {
+    evt.preventDefault();
+
+    if (evt.target.tagName !== 'LABEL') {
+      return;
+    }
+
+    const type = evt.target.dataset.type;
+    this.updateElement({
+      type,
+      offers: this._state.offersState
+    });
+  };
 }

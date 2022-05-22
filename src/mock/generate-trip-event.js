@@ -9,13 +9,8 @@ export const generateTripEvent = () => {
 
   const getOffersIds = () => {
     const offers = eventOffers(type).offers;
-    const ids = [];
 
-    offers.forEach((item) => {
-      ids.push(item.id);
-    });
-
-    return ids;
+    return offers.map((item) => item.id);
   };
 
   return ({
@@ -38,4 +33,3 @@ export const generateTripEvent = () => {
     type,
   });
 };
-
