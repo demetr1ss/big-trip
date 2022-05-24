@@ -9,7 +9,7 @@ export const SortType = {
 };
 
 export const sortEventsDefault = (pointA, pointB) =>
-  dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom));
+  dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
 export const sortEventsByTime = (pointA, pointB) => {
   const durationPointA = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));

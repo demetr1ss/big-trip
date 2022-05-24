@@ -1,35 +1,25 @@
 import { getRandomInteger, getRandomArrayElement } from '../utils/common.js';
-import { OFFER_TYPES, ALL_OFFERS, CITIES, DESCRIPTIONS, START_DATES, END_DATES } from './mock-data.js';
-import { nanoid } from 'nanoid';
+import { OFFER_TYPES, START_DATES, END_DATES } from './mock-data.js';
+import { ALL_OFFERS } from './offers.js';
+import { customAlphabet } from 'nanoid';
+import { DESTINATIONS } from './destinations.js';
+
+const nanoid = customAlphabet('1234567890', 10);
 
 export const eventOffers = (type) => ALL_OFFERS.find((offer) => offer.type === type);
+export const allCityes = () => DESTINATIONS.map((city) => city.name);
 
 export const generateTripEvent = () => {
   const type = getRandomArrayElement(OFFER_TYPES);
-
-  const getOffersIds = () => {
-    const offers = eventOffers(type).offers;
-
-    return offers.map((item) => item.id);
-  };
 
   return ({
     basePrice: getRandomInteger(200, 1000),
     dateFrom: getRandomArrayElement(START_DATES),
     dateTo: getRandomArrayElement(END_DATES),
-    destination: {
-      description: getRandomArrayElement(DESCRIPTIONS),
-      name: getRandomArrayElement(CITIES),
-      pictures: [
-        {
-          src: `http://picsum.photos/300/200?r=${getRandomInteger(0, 10000)}`,
-          description: 'description'
-        }
-      ]
-    },
+    destination: getRandomArrayElement(DESTINATIONS),
     id: nanoid(),
     isFavorite: Boolean(getRandomInteger()),
-    offers: getOffersIds(),
+    offers: [1, 2, 3],
     type,
   });
 };
