@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, getDurationTime } from '../utils/date.js';
-import { eventOffers } from '../mock/generate-trip-event.js';
+import { getEventOffers } from '../mock/generate-trip-event.js';
 
 const createEventTemplate = (point) => {
   const {
@@ -13,7 +13,7 @@ const createEventTemplate = (point) => {
     isFavorite,
   } = point;
 
-  const choisenOptions = eventOffers(type).offers;
+  const choisenOptions = getEventOffers(type).offers;
 
   const favoriteClassName = isFavorite ?
     'event__favorite-btn  event__favorite-btn--active':

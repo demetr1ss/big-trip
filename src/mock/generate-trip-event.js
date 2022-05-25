@@ -6,7 +6,7 @@ import { DESTINATIONS } from './destinations.js';
 
 const nanoid = customAlphabet('1234567890', 10);
 
-export const eventOffers = (type) => ALL_OFFERS.find((offer) => offer.type === type);
+export const getEventOffers = (type) => ALL_OFFERS.find((offer) => offer.type === type);
 export const allCityes = () => DESTINATIONS.map((city) => city.name);
 
 export const generateTripEvent = () => {

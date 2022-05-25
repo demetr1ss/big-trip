@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatDate } from '../utils/date.js';
 import { OFFER_TYPES} from '../mock/mock-data.js';
-import { eventOffers, allCityes } from '../mock/generate-trip-event.js';
+import { getEventOffers, allCityes } from '../mock/generate-trip-event.js';
 import { DESTINATIONS } from '../mock/destinations.js';
 
 const createFormEditTemplate = (event) => {
@@ -15,8 +15,8 @@ const createFormEditTemplate = (event) => {
     id
   } = event;
 
-  const allAvailableOption = eventOffers(type).offers;
-  const hideOffersContainer = () => !allAvailableOption.length ? 'visually-hidden' : '';
+  const allAvailableOptions = getEventOffers(type).offers;
+  const hideOffersContainer = () => !allAvailableOptions.length ? 'visually-hidden' : '';
   const hideDestinationContainer = () => !destination.description && !destination.pictures.length
     ? 'visually-hidden'
     : '';
@@ -132,7 +132,7 @@ const createFormEditTemplate = (event) => {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
     
-    ${allAvailableOption.map((item) => {
+    ${allAvailableOptions.map((item) => {
       const checked = offers.includes(item.id) ? 'checked' : '';
 
       return (`
@@ -234,14 +234,14 @@ export default class FormEditView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
     this._setState({
-      basePrice: evt.target.value
+      basePrice: Number(evt.target.value)
     });
   };
 
-  #getChangeDestination = (destinationName) => {
+  #changeDestination = (destinationName) => {
     const destination = DESTINATIONS.filter((item) => item.name === destinationName);
 
-    if (!destination.length > 0) {
+    if (!destination.length) {
       return {
         description: '',
         name: destinationName,
@@ -255,7 +255,7 @@ export default class FormEditView extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      destination: this.#getChangeDestination(evt.target.value)
+      destination: this.#changeDestination(evt.target.value)
     });
   };
 
@@ -273,15 +273,15 @@ export default class FormEditView extends AbstractStatefulView {
 
   #offersChangeHandler = (evt) => {
     evt.preventDefault();
-    const currentId = Number(evt.target.id.slice(-1));
+    const currentId = Number(evt.target.id.split('-')[1]);
     const stateOffers = this._state.offers;
 
-    const updatedOffers = () => stateOffers.includes(currentId)
+    const updatedOffers = stateOffers.includes(currentId)
       ? stateOffers.filter((item) => item !== currentId)
-      : this._state.offers.concat(currentId);
+      : stateOffers.concat(currentId);
 
     this.updateElement({
-      offers: updatedOffers()
+      offers: updatedOffers
     });
 
   };

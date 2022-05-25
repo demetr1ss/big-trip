@@ -23,7 +23,6 @@ export default class TripPresenter {
   #eventPresenter = new Map();
 
   #currentSortType = SortType.DEFAULT;
-  #sourcedEventList = [];
 
   constructor(container, eventModel) {
     this.#container = container;
@@ -32,8 +31,6 @@ export default class TripPresenter {
 
   init = () => {
     this.#eventList = [...this.#eventModel.points];
-    this.#sourcedEventList = [...this.#eventList];
-
     this.#renderTrip();
   };
 
@@ -43,7 +40,6 @@ export default class TripPresenter {
 
   #handleEventChange = (updatedEvent) => {
     this.#eventList = updateItem(this.#eventList, updatedEvent);
-    this.#sourcedEventList = updateItem(this.#sourcedEventList, updatedEvent);
     this.#eventPresenter.get(updatedEvent.id).init(updatedEvent);
   };
 
