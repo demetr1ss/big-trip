@@ -87,6 +87,7 @@ export default class EventPresenter {
   #onEscKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
+      this.#formEditComponent.reset(this.#event);
       this.#replaceFormToEvent();
     }
   };
@@ -96,6 +97,7 @@ export default class EventPresenter {
   };
 
   #handleRollUpClick = () => {
+    this.#formEditComponent.reset(this.#event);
     this.#replaceFormToEvent();
   };
 
@@ -104,9 +106,7 @@ export default class EventPresenter {
     this.#replaceFormToEvent();
   };
 
-  #handleDeleteClick = () => {
-    this.#replaceFormToEvent();
-  };
+  #handleDeleteClick = () => {};
 
   #handleFavoriteClick = () => {
     this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
