@@ -344,6 +344,7 @@ export default class FormEditView extends AbstractStatefulView {
       {
         enableTime: true,
         'time_24hr': true, // линтер ругается на snake_case
+        maxDate: this._state.dateTo,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.dateFrom,
         onClose: this.#dateFromChangeHandler,
