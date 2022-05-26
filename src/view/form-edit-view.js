@@ -80,6 +80,7 @@ const createFormEditTemplate = (event) => {
               type="text" name="event-destination" 
               value="${destination.name}" 
               list="destination-list-${id}"
+              required
             >
             <datalist id="destination-list-${id}">
               ${allCityes().map((city) => `<option value=${city}></option>`).join('')}
@@ -94,6 +95,7 @@ const createFormEditTemplate = (event) => {
               type="text" 
               name="event-start-time" 
               value="${formatDate(dateFrom,'DD/MM/YY HH:mm')}"
+              required
             >
               &mdash;
             <label class="visually-hidden" for="event-end-time-${id}">To</label>
@@ -103,6 +105,7 @@ const createFormEditTemplate = (event) => {
               type="text"
               name="event-end-time"
               value="${formatDate(dateTo,'DD/MM/YY HH:mm')}"
+              required
             >
           </div>
 
@@ -117,6 +120,7 @@ const createFormEditTemplate = (event) => {
               type="text" 
               name="event-price" 
               value="${basePrice}"
+              required
             >
           </div>
 
@@ -233,6 +237,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
+    evt.target.value = Math.floor(Math.abs(evt.target.value));
     this._setState({
       basePrice: Number(evt.target.value)
     });
@@ -242,11 +247,7 @@ export default class FormEditView extends AbstractStatefulView {
     const destination = DESTINATIONS.filter((item) => item.name === destinationName);
 
     if (!destination.length) {
-      return {
-        description: '',
-        name: destinationName,
-        pictures: []
-      };
+      return;
     }
 
     return destination[0];
@@ -254,6 +255,12 @@ export default class FormEditView extends AbstractStatefulView {
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
+
+    if (!this.#changeDestination(evt.target.value)){
+      evt.target.value = '';
+      return;
+    }
+
     this.updateElement({
       destination: this.#changeDestination(evt.target.value)
     });
