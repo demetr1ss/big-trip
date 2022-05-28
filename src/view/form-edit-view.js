@@ -187,8 +187,6 @@ export default class FormEditView extends AbstractStatefulView {
     super();
     this._state = FormEditView.parseDataToState(point);
     this.#setInnerHandlers();
-    this.#setDateToPicker();
-    this.#setDateFromPicker();
   }
 
   get template() {
@@ -336,6 +334,12 @@ export default class FormEditView extends AbstractStatefulView {
 
     this.element.querySelector('.event__available-offers')
       .addEventListener('change', this.#offersChangeHandler);
+
+    this.element.querySelector('input[name="event-start-time"]')
+      .addEventListener('focus', this.#setDateFromPicker);
+
+    this.element.querySelector('input[name="event-end-time"]')
+      .addEventListener('focus', this.#setDateToPicker);
   };
 
   #setDateFromPicker = () => {
@@ -343,7 +347,7 @@ export default class FormEditView extends AbstractStatefulView {
       this.element.querySelector('input[name="event-start-time"]'),
       {
         enableTime: true,
-        'time_24hr': true, // линтер ругается на snake_case
+        'time_24hr': true,
         maxDate: this._state.dateTo,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.dateFrom,
@@ -357,7 +361,7 @@ export default class FormEditView extends AbstractStatefulView {
       this.element.querySelector('input[name="event-end-time"]'),
       {
         enableTime: true,
-        'time_24hr': true, // линтер ругается на snake_case
+        'time_24hr': true,
         dateFormat: 'd/m/y H:i',
         minDate: this._state.dateFrom,
         defaultDate: this._state.dateTo,
