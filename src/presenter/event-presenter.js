@@ -106,7 +106,10 @@ export default class EventPresenter {
     this.#replaceFormToEvent();
   };
 
-  #handleDeleteClick = () => {};
+  #handleDeleteClick = () => {
+    this.#formEditComponent.reset(this.#event); // временное решение. В будущем заменить на удаление компонента из данных
+    this.#replaceFormToEvent();
+  };
 
   #handleFavoriteClick = () => {
     this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
