@@ -83,6 +83,7 @@ const createFormEditTemplate = (event) => {
               value="${destination.name}" 
               list="destination-list-${id}"
               required
+              autocomplete="off"
             >
             <datalist id="destination-list-${id}">
               ${allCityes().map((city) => `<option value=${city}></option>`).join('')}
@@ -123,6 +124,7 @@ const createFormEditTemplate = (event) => {
               name="event-price" 
               value="${basePrice}"
               required
+              autocomplete="off"
             >
           </div>
 
