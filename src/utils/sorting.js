@@ -1,13 +1,5 @@
 import dayjs from 'dayjs';
 
-export const SortType = {
-  DEFAULT: 'day',
-  EVENT: 'event',
-  TIME: 'time',
-  PRICE: 'price',
-  OFFER: 'offer',
-};
-
 export const sortEventsDefault = (pointA, pointB) =>
   dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 

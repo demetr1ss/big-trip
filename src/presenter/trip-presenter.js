@@ -1,15 +1,11 @@
+/* eslint-disable no-console */
 import EventPresenter from './event-presenter.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import { render } from '../framework/render.js';
-import {
-  sortEventsDefault,
-  sortEventsByPrice,
-  sortEventsByTime,
-  SortType
-} from '../utils/sorting.js';
-import { updateItem } from '../utils/common.js';
+import { sortEventsDefault, sortEventsByPrice, sortEventsByTime } from '../utils/sorting.js';
+import { SortType } from '../utils/const.js';
 
 export default class TripPresenter {
   #container = null;
@@ -18,8 +14,6 @@ export default class TripPresenter {
   #componentList = new EventListView();
   #sortComponent = new SortView();
   #noEventComponent = new NoEventView();
-
-  #eventList = [];
   #eventPresenter = new Map();
 
   #currentSortType = SortType.DEFAULT;
@@ -27,10 +21,23 @@ export default class TripPresenter {
   constructor(container, eventModel) {
     this.#container = container;
     this.#eventModel = eventModel;
+    this.#eventModel.addObserver(this.#handleModelEvent);
+  }
+
+  get events() {
+    switch(this.#currentSortType) {
+      case SortType.DEFAULT:
+        return [...this.#eventModel.points].sort(sortEventsDefault);
+      case SortType.PRICE:
+        return [...this.#eventModel.points].sort(sortEventsByPrice);
+      case SortType.TIME:
+        return [...this.#eventModel.points].sort(sortEventsByTime);
+    }
+
+    return this.#eventModel.points;
   }
 
   init = () => {
-    this.#eventList = [...this.#eventModel.points];
     this.#renderTrip();
   };
 
@@ -38,30 +45,20 @@ export default class TripPresenter {
     this.#eventPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  #handleEventChange = (updatedEvent) => {
-    this.#eventList = updateItem(this.#eventList, updatedEvent);
-    this.#eventPresenter.get(updatedEvent.id).init(updatedEvent);
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   };
 
-  #sortEvents = (sortType) => {
-    switch (sortType) {
-      case SortType.DEFAULT:
-        this.#eventList.sort(sortEventsDefault);
-        break;
-
-      case SortType.TIME:
-        this.#eventList.sort(sortEventsByTime);
-        break;
-
-      case SortType.PRICE:
-        this.#eventList.sort(sortEventsByPrice);
-        break;
-
-      default:
-        throw new Error('sortType unknown');
-    }
-
-    this.#currentSortType = sortType;
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда удалили точку)
+    // - обновить всю доску (например, при переключении фильтра)
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -69,7 +66,7 @@ export default class TripPresenter {
       return;
     }
 
-    this.#sortEvents(sortType);
+    this.#currentSortType = sortType;
     this.#clearEventList();
     this.#renderEvents();
   };
@@ -82,11 +79,15 @@ export default class TripPresenter {
   #renderEvent = (item) => {
     const eventPresenter = new EventPresenter(
       this.#componentList.element,
-      this.#handleEventChange,
+      this.#handleViewAction,
       this.#handleModeChange
     );
     eventPresenter.init(item);
     this.#eventPresenter.set(item.id, eventPresenter);
+  };
+
+  #renderEvents = () => {
+    this.events.forEach(this.#renderEvent);
   };
 
   #clearEventList = () => {
@@ -95,18 +96,14 @@ export default class TripPresenter {
   };
 
   #renderTrip = () => {
-    if (!this.#eventList.length) {
+    if (!this.events.length) {
       render(this.#noEventComponent, this.#container);
       return;
     }
 
     this.#renderSort();
     render(this.#componentList, this.#container);
-    this.#eventList.sort(sortEventsDefault);
+    this.events.sort(sortEventsDefault);
     this.#renderEvents();
-  };
-
-  #renderEvents = () => {
-    this.#eventList.forEach(this.#renderEvent);
   };
 }

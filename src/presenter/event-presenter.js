@@ -3,6 +3,7 @@ import { render, replace, remove } from '../framework/render.js';
 import { isEscapeKey } from '../utils/common.js';
 import FormEditView from '../view/form-edit-view.js';
 import EventView from '../view/event-view.js';
+import { UserAction, UpdateType } from '../utils/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -102,7 +103,11 @@ export default class EventPresenter {
   };
 
   #handleFormSubmit = (item) => {
-    this.#changeData(item);
+    this.#changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      item
+    );
     this.#replaceFormToEvent();
   };
 
@@ -112,7 +117,11 @@ export default class EventPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
+      {...this.#event, isFavorite: !this.#event.isFavorite}
+    );
   };
 
 }

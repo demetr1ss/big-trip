@@ -1,10 +1,5 @@
 import { isDateExpired, isToday } from './date.js';
-
-const FilterType = {
-  EVERYTHING : 'everything',
-  FUTURE: 'future',
-  PAST: 'past',
-};
+import { FilterType } from './const.js';
 
 export const filter = {
   [FilterType.EVERYTHING]: (eventList) => eventList,

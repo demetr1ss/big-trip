@@ -1,8 +1,9 @@
 import { getRandomInteger, getRandomArrayElement } from '../utils/common.js';
-import { OFFER_TYPES, START_DATES, END_DATES } from './mock-data.js';
+import { START_DATES, END_DATES } from './mock-data.js';
 import { ALL_OFFERS } from './offers.js';
 import { customAlphabet } from 'nanoid';
 import { DESTINATIONS } from './destinations.js';
+import { OFFER_TYPES } from '../utils/const.js';
 
 const nanoid = customAlphabet('1234567890', 10);
 
