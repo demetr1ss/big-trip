@@ -246,7 +246,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteClick();
+    this._callback.deleteClick(FormEditView.parseStateToData(this._state));
   };
 
   #editClickHandler = (evt) => {

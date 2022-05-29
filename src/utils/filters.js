@@ -10,10 +10,3 @@ export const filter = {
   [FilterType.PAST]: (eventList) => eventList.filter(
     (point) => isDateExpired(point.dateTo)),
 };
-
-export const generateFilter = (eventList) => Object.entries(filter).map(
-  ([filterName, filterEvents]) => ({
-    name: filterName,
-    count: filterEvents(eventList).length,
-  }),
-);

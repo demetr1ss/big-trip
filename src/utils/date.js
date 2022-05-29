@@ -24,3 +24,5 @@ export const isDateExpired = (dueDate) =>
   dueDate && dayjs().isAfter(dueDate, 'D');
 
 export const isToday = (dueDate) => dayjs().isSame(dueDate, 'D');
+
+export const isDatesEqual = (dateA, dateB) => dayjs(dateA).isSame(dateB, 'D');
