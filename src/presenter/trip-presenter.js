@@ -1,4 +1,5 @@
 import EventPresenter from './event-presenter.js';
+import EventNewPresenter from './event-new-presenter.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
@@ -16,6 +17,7 @@ export default class TripPresenter {
   #sortComponent = null;
   #noEventComponent = null;
   #eventPresenter = new Map();
+  #eventNewPresenter = null;
 
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
@@ -24,6 +26,9 @@ export default class TripPresenter {
     this.#container = container;
     this.#eventModel = eventModel;
     this.#filterModel = filterModel;
+
+    this.#eventNewPresenter = new EventNewPresenter(this.#componentList.element,
+      this.#handleViewAction);
 
     this.#eventModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -50,7 +55,14 @@ export default class TripPresenter {
     this.#renderTrip();
   };
 
+  createEvent = (callback) => {
+    this.#currentSortType = SortType.DEFAULT;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#eventNewPresenter.init(callback);
+  };
+
   #handleModeChange = () => {
+    this.#eventNewPresenter.destroy();
     this.#eventPresenter.forEach((presenter) => presenter.resetView());
   };
 
@@ -116,6 +128,7 @@ export default class TripPresenter {
   };
 
   #clearEvents = ({resetSortType = false} = {}) => {
+    this.#eventNewPresenter.destroy();
     this.#eventPresenter.forEach((presenter) => presenter.destroy());
     this.#eventPresenter.clear();
 

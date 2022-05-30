@@ -1,4 +1,5 @@
 import TripInfoView from './view/trip-info-view.js';
+import NewEventButtonView from './view/new-event-button-view.js';
 import FilterModel from './model/filter-model.js';
 import EventsModel from './model/event-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -13,6 +14,19 @@ const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
 const tripPresenter = new TripPresenter(tripEventsContainer, eventsModel, filterModel);
 const filterPresenter = new FilterPresenter(filtersContainer, filterModel, eventsModel);
+const newEventButtonComponent = new NewEventButtonView();
+
+const handleNewEventFormClose = () => {
+  newEventButtonComponent.element.disabled = false;
+};
+
+const handleNewTaskButtonClick = () => {
+  tripPresenter.createEvent(handleNewEventFormClose);
+  newEventButtonComponent.element.disabled = true;
+};
+
+render(newEventButtonComponent, tripMainContainer);
+newEventButtonComponent.setClickHandler(handleNewTaskButtonClick);
 
 render(new TripInfoView(), tripMainContainer, RenderPosition.AFTERBEGIN);
 
