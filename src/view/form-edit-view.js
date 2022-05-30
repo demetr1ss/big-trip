@@ -2,7 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { formatDate } from '../utils/date.js';
-import { OFFER_TYPES} from '../mock/mock-data.js';
+import { OFFER_TYPES } from '../utils/const.js';
 import { getEventOffers, allCityes } from '../mock/generate-trip-event.js';
 import { DESTINATIONS } from '../mock/destinations.js';
 
@@ -120,11 +120,12 @@ const createFormEditTemplate = (event) => {
             <input 
               class="event__input  event__input--price" 
               id="event-price-${id}" 
-              type="text" 
+              type="number" 
               name="event-price" 
               value="${basePrice}"
               required
               autocomplete="off"
+              min="1"
             >
           </div>
 
@@ -246,7 +247,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteClick();
+    this._callback.deleteClick(FormEditView.parseStateToData(this._state));
   };
 
   #editClickHandler = (evt) => {

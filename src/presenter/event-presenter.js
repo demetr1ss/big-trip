@@ -3,6 +3,8 @@ import { render, replace, remove } from '../framework/render.js';
 import { isEscapeKey } from '../utils/common.js';
 import FormEditView from '../view/form-edit-view.js';
 import EventView from '../view/event-view.js';
+import { UserAction, UpdateType } from '../utils/const.js';
+import { isDatesEqual } from '../utils/date.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -101,18 +103,34 @@ export default class EventPresenter {
     this.#replaceFormToEvent();
   };
 
-  #handleFormSubmit = (item) => {
-    this.#changeData(item);
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate =
+      !isDatesEqual(this.#event.dateFrom, update.dateFrom) ||
+      !isDatesEqual(this.#event.dateTo, update.dateTo);
+
+    this.#changeData(
+      UserAction.UPDATE_EVENT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update
+    );
     this.#replaceFormToEvent();
   };
 
-  #handleDeleteClick = () => {
-    this.#formEditComponent.reset(this.#event); // временное решение. В будущем заменить на удаление компонента из данных
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_EVENT,
+      UpdateType.MINOR,
+      point,
+    );
     this.#replaceFormToEvent();
   };
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
+      {...this.#event, isFavorite: !this.#event.isFavorite}
+    );
   };
 
 }
