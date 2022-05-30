@@ -133,11 +133,12 @@ const createFormTemplate = (event = BLANK_EVENT) => {
               <input 
                 class="event__input  event__input--price" 
                 id="event-price-1" 
-                type="text" 
+                type="number" 
                 name="event-price" 
                 value="${basePrice}"
                 required
                 autocomplete="off"
+                min="1"
               >
             </div>
 

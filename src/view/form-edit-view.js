@@ -120,11 +120,12 @@ const createFormEditTemplate = (event) => {
             <input 
               class="event__input  event__input--price" 
               id="event-price-${id}" 
-              type="text" 
+              type="number" 
               name="event-price" 
               value="${basePrice}"
               required
               autocomplete="off"
+              min="1"
             >
           </div>
 
