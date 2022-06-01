@@ -1,4 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { formatDate } from '../utils/date.js';
@@ -80,7 +81,7 @@ const createFormEditTemplate = (event) => {
               class="event__input  event__input--destination" 
               id="event-destination-${id}" 
               type="text" name="event-destination" 
-              value="${destination.name}" 
+              value="${he.encode(destination.name)}" 
               list="destination-list-${id}"
               required
               autocomplete="off"
@@ -186,9 +187,9 @@ export default class FormEditView extends AbstractStatefulView {
   #dateFromPicker = null;
   #dateToPicker = null;
 
-  constructor(point) {
+  constructor(event) {
     super();
-    this._state = FormEditView.parseDataToState(point);
+    this._state = FormEditView.parseDataToState(event);
     this.#setInnerHandlers();
   }
 
@@ -214,9 +215,9 @@ export default class FormEditView extends AbstractStatefulView {
       .addEventListener('click', this.#editClickHandler);
   };
 
-  reset = (point) => {
+  reset = (event) => {
     this.updateElement(
-      FormEditView.parseDataToState(point),
+      FormEditView.parseDataToState(event),
     );
   };
 
@@ -263,26 +264,18 @@ export default class FormEditView extends AbstractStatefulView {
     });
   };
 
-  #changeDestination = (destinationName) => {
-    const destination = DESTINATIONS.filter((item) => item.name === destinationName);
-
-    if (!destination.length) {
-      return;
-    }
-
-    return destination[0];
-  };
-
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    if (!this.#changeDestination(evt.target.value)){
+    const destination = DESTINATIONS.find((item) => item.name === evt.target.value);
+
+    if (!destination){
       evt.target.value = '';
       return;
     }
 
     this.updateElement({
-      destination: this.#changeDestination(evt.target.value)
+      destination,
     });
   };
 

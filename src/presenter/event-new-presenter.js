@@ -54,11 +54,11 @@ export default class EventNewPresenter {
     }
   };
 
-  #handleFormSubmit = (point) => {
+  #handleFormSubmit = (event) => {
     this.#changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {id: nanoid(), ...point},
+      {id: nanoid(), ...event},
     );
     this.destroy();
   };

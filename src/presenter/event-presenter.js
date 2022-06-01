@@ -116,11 +116,11 @@ export default class EventPresenter {
     this.#replaceFormToEvent();
   };
 
-  #handleDeleteClick = (point) => {
+  #handleDeleteClick = (event) => {
     this.#changeData(
       UserAction.DELETE_EVENT,
       UpdateType.MINOR,
-      point,
+      event,
     );
     this.#replaceFormToEvent();
   };

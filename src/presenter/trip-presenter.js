@@ -36,8 +36,8 @@ export default class TripPresenter {
 
   get events() {
     this.#filterType = this.#filterModel.filter;
-    const points = this.#eventModel.points;
-    const filteredPoints = filter[this.#filterType](points);
+    const events = this.#eventModel.events;
+    const filteredPoints = filter[this.#filterType](events);
 
     switch(this.#currentSortType) {
       case SortType.DEFAULT:
@@ -78,7 +78,7 @@ export default class TripPresenter {
         this.#eventModel.deleteEvent(updateType, update);
         break;
       default:
-        throw new Error('actionType not exist');
+        throw new Error(`actionType: ${actionType} not exist`);
     }
   };
 

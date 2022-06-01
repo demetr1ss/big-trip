@@ -18,23 +18,23 @@ export default class FilterPresenter {
   }
 
   get filters() {
-    const points = this.#eventModel.points;
+    const events = this.#eventModel.events;
 
     return [
       {
         type: FilterType.EVERYTHING,
         name: 'Everything',
-        count: filter[FilterType.EVERYTHING](points).length,
+        count: filter[FilterType.EVERYTHING](events).length,
       },
       {
         type: FilterType.PAST,
         name: 'Past',
-        count: filter[FilterType.PAST](points).length,
+        count: filter[FilterType.PAST](events).length,
       },
       {
         type: FilterType.FUTURE,
         name: 'Future',
-        count: filter[FilterType.FUTURE](points).length,
+        count: filter[FilterType.FUTURE](events).length,
       },
     ];
   }

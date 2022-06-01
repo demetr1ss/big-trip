@@ -1,16 +1,18 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/airbnb.css';
+import dayjs from 'dayjs';
 import { getEventOffers, allCityes } from '../mock/generate-trip-event.js';
 import { OFFER_TYPES } from '../utils/const.js';
 import { formatDate } from '../utils/date.js';
 import { DESTINATIONS } from '../mock/destinations.js';
-import dayjs from 'dayjs';
 
 const BLANK_EVENT = {
   basePrice: '',
   dateFrom: `${dayjs()}`,
-  dateTo: `${dayjs().add('1', 'M')}`,
+  dateTo: `${dayjs().add('14', 'd')}`,
   destination: {
     description: '',
     name: '',
@@ -93,7 +95,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
               class="event__input  event__input--destination" 
               id="event-destination-1" 
               type="text" name="event-destination" 
-              value="${destination.name}" 
+              value="${he.encode(destination.name)}" 
               list="destination-list-1"
               required
               autocomplete="off"
@@ -218,9 +220,9 @@ export default class FormCreateView extends AbstractStatefulView {
       .addEventListener('click', this.#cancelClickHandler);
   };
 
-  reset = (point) => {
+  reset = (event) => {
     this.updateElement(
-      FormCreateView.parseDataToState(point),
+      FormCreateView.parseDataToState(event),
     );
   };
 
@@ -261,26 +263,18 @@ export default class FormCreateView extends AbstractStatefulView {
     });
   };
 
-  #changeDestination = (destinationName) => {
-    const destination = DESTINATIONS.filter((item) => item.name === destinationName);
-
-    if (!destination.length) {
-      return;
-    }
-
-    return destination[0];
-  };
-
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    if (!this.#changeDestination(evt.target.value)){
+    const destination = DESTINATIONS.find((item) => item.name === evt.target.value);
+
+    if (!destination){
       evt.target.value = '';
       return;
     }
 
     this.updateElement({
-      destination: this.#changeDestination(evt.target.value)
+      destination,
     });
   };
 

@@ -20,13 +20,13 @@ const handleNewEventFormClose = () => {
   newEventButtonComponent.element.disabled = false;
 };
 
-const handleNewTaskButtonClick = () => {
+const handleNewEventButtonClick = () => {
   tripPresenter.createEvent(handleNewEventFormClose);
   newEventButtonComponent.element.disabled = true;
 };
 
 render(newEventButtonComponent, tripMainContainer);
-newEventButtonComponent.setClickHandler(handleNewTaskButtonClick);
+newEventButtonComponent.setClickHandler(handleNewEventButtonClick);
 
 render(new TripInfoView(), tripMainContainer, RenderPosition.AFTERBEGIN);
 

@@ -5,8 +5,8 @@ export const filter = {
   [FilterType.EVERYTHING]: (eventList) => eventList,
 
   [FilterType.FUTURE]: (eventList) => eventList.filter(
-    (point) => !isDateExpired(point.dateFrom) || isToday(point.dateFrom)),
+    (event) => !isDateExpired(event.dateFrom) || isToday(event.dateFrom)),
 
   [FilterType.PAST]: (eventList) => eventList.filter(
-    (point) => isDateExpired(point.dateTo)),
+    (event) => isDateExpired(event.dateTo)),
 };
