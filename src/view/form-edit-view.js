@@ -15,7 +15,10 @@ const createFormEditTemplate = (event) => {
     destination,
     basePrice,
     offers,
-    id
+    id,
+    isDisabled,
+    isSaving,
+    isDeleting,
   } = event;
 
   const allAvailableOptions = getEventOffers(type).offers;
@@ -44,6 +47,7 @@ const createFormEditTemplate = (event) => {
               visually-hidden" 
               id="event-type-toggle-${id}" 
               type="checkbox"
+              ${isDisabled ? 'disabled' : ''}
             >
 
             <div class="event__type-list">
@@ -85,6 +89,7 @@ const createFormEditTemplate = (event) => {
               list="destination-list-${id}"
               required
               autocomplete="off"
+              ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list-${id}">
               ${allCityes().map((city) => `<option value=${city}></option>`).join('')}
@@ -100,6 +105,7 @@ const createFormEditTemplate = (event) => {
               name="event-start-time" 
               value="${formatDate(dateFrom,'DD/MM/YY HH:mm')}"
               required
+              ${isDisabled ? 'disabled' : ''}
             >
               &mdash;
             <label class="visually-hidden" for="event-end-time-${id}">To</label>
@@ -110,6 +116,7 @@ const createFormEditTemplate = (event) => {
               name="event-end-time"
               value="${formatDate(dateTo,'DD/MM/YY HH:mm')}"
               required
+              ${isDisabled ? 'disabled' : ''}
             >
           </div>
 
@@ -127,12 +134,23 @@ const createFormEditTemplate = (event) => {
               required
               autocomplete="off"
               min="1"
+              ${isDisabled ? 'disabled' : ''}
             >
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
+          <button class="event__save-btn  btn  btn--blue"
+           type="submit"
+           ${isDisabled ? 'disabled' : ''}
+          >
+            ${isSaving ? 'Saving...' : 'Save'}
+          </button>
+          <button class="event__reset-btn"
+           type="reset"
+          ${isDisabled ? 'disabled' : ''}
+          >
+            ${isDeleting ? 'Deleting...' : 'Delete'}
+          </button>
+          <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
@@ -153,6 +171,7 @@ const createFormEditTemplate = (event) => {
                   type="checkbox" 
                   name="event-offer-${item.title}" 
                   ${checked}
+                  ${isDisabled ? 'disabled' : ''}
                 >
                 <label class="event__offer-label" for=${id}-${item.id}>
                   <span class="event__offer-title">${item.title}</span>
@@ -366,6 +385,19 @@ export default class FormEditView extends AbstractStatefulView {
     );
   };
 
-  static parseDataToState = (data) => ({ ...data });
-  static parseStateToData = (state) => ({ ...state });
+  static parseDataToState = (data) => ({ ...data,
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
+  });
+
+  static parseStateToData = (state) => {
+    const data = {...state};
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
+    return data;
+  };
 }

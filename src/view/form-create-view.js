@@ -30,6 +30,8 @@ const createFormTemplate = (event = BLANK_EVENT) => {
     destination,
     basePrice,
     offers,
+    isDisabled,
+    isSaving,
   } = event;
 
   const allAvailableOptions = getEventOffers(type).offers;
@@ -58,6 +60,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
                 visually-hidden" 
                 id="event-type-toggle-1" 
                 type="checkbox"
+                ${isDisabled ? 'disabled' : ''}
               >
 
           <div class="event__type-list">
@@ -99,6 +102,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
               list="destination-list-1"
               required
               autocomplete="off"
+              ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list-1">
               ${allCityes().map((city) => `<option value=${city}></option>`).join('')}
@@ -114,6 +118,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
             name="event-start-time" 
             value="${formatDate(dateFrom,'DD/MM/YY HH:mm')}"
             required
+            ${isDisabled ? 'disabled' : ''}
           >
             &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -124,6 +129,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
             name="event-end-time"
             value="${formatDate(dateTo,'DD/MM/YY HH:mm')}"
             required
+            ${isDisabled ? 'disabled' : ''}
           >
         </div>
 
@@ -141,11 +147,17 @@ const createFormTemplate = (event = BLANK_EVENT) => {
                 required
                 autocomplete="off"
                 min="1"
+                ${isDisabled ? 'disabled' : ''}
               >
             </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__save-btn  btn  btn--blue"
+          type="submit" 
+          ${isDisabled ? 'disabled' : ''}
+        >
+          ${isSaving ? 'Saving...' : 'Save'}
+        </button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>Cancel</button>
       </header>
 
       <section class="event__details">
@@ -164,6 +176,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
             type="checkbox" 
             name="event-offer-${item.title}" 
             ${checked}
+            ${isDisabled ? 'disabled' : ''}
           >
           <label class="event__offer-label" for=1-${item.id}>
             <span class="event__offer-title">${item.title}</span>
@@ -365,6 +378,17 @@ export default class FormCreateView extends AbstractStatefulView {
     );
   };
 
-  static parseDataToState = (data) => ({ ...data });
-  static parseStateToData = (state) => ({ ...state });
+  static parseDataToState = (data) => ({ ...data,
+    isDisabled: false,
+    isSaving: false,
+  });
+
+  static parseStateToData = (state) => {
+    const data = {...state};
+
+    delete data.isDisabled;
+    delete data.isSaving;
+
+    return data;
+  };
 }

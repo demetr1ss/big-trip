@@ -1,11 +1,7 @@
-
 import { render, remove, RenderPosition } from '../framework/render.js';
 import FormCreateView from '../view/form-create-view.js';
 import { isEscapeKey } from '../utils/common.js';
 import { UserAction, UpdateType } from '../utils/const';
-import { customAlphabet } from 'nanoid';
-
-const nanoid = customAlphabet('1234567890', 10);
 
 export default class EventNewPresenter {
   #eventListContainer = null;
@@ -47,6 +43,13 @@ export default class EventNewPresenter {
     document.removeEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
+  setSaving = () => {
+    this.#formCreateComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
   #onEscKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
@@ -58,9 +61,8 @@ export default class EventNewPresenter {
     this.#changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {id: nanoid(), ...event},
+      event,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {

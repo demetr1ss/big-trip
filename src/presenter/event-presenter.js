@@ -1,4 +1,3 @@
-
 import { render, replace, remove } from '../framework/render.js';
 import { isEscapeKey } from '../utils/common.js';
 import FormEditView from '../view/form-edit-view.js';
@@ -52,7 +51,8 @@ export default class EventPresenter {
         replace(this.#eventComponent, prevEventComponent);
         break;
       case Mode.EDITING:
-        replace(this.#formEditComponent, prevFormEditComponent);
+        replace(this.#eventComponent, prevFormEditComponent);
+        this.#mode = Mode.DEFAULT;
         break;
       default:
         throw new Error(`${this.#mode} unknown`);
@@ -70,6 +70,24 @@ export default class EventPresenter {
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToEvent();
+    }
+  };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
     }
   };
 
@@ -122,7 +140,6 @@ export default class EventPresenter {
       UpdateType.MINOR,
       event,
     );
-    this.#replaceFormToEvent();
   };
 
   #handleFavoriteClick = () => {

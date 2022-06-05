@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
 import EventPresenter from './event-presenter.js';
 import EventNewPresenter from './event-new-presenter.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
-import { remove, render } from '../framework/render.js';
+import LoadingView from '../view/loading-view.js';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import { sortEventsDefault, sortEventsByPrice, sortEventsByTime } from '../utils/sorting.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../utils/const.js';
 import { filter } from '../utils/filters.js';
@@ -14,18 +16,23 @@ export default class TripPresenter {
   #filterModel = null;
 
   #componentList = new EventListView();
+  #loadingComponent = new LoadingView();
+  #eventPresenter = new Map();
   #sortComponent = null;
   #noEventComponent = null;
-  #eventPresenter = new Map();
   #eventNewPresenter = null;
 
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor(container, eventModel, filterModel) {
     this.#container = container;
     this.#eventModel = eventModel;
     this.#filterModel = filterModel;
+
+    console.log('offers', this.#eventModel.offers);
+    console.log('destinations', this.#eventModel.destinations);
 
     this.#eventNewPresenter = new EventNewPresenter(this.#componentList.element,
       this.#handleViewAction);
@@ -37,18 +44,26 @@ export default class TripPresenter {
   get events() {
     this.#filterType = this.#filterModel.filter;
     const events = this.#eventModel.events;
-    const filteredPoints = filter[this.#filterType](events);
+    const filteredEvents = filter[this.#filterType](events);
 
     switch(this.#currentSortType) {
       case SortType.DEFAULT:
-        return filteredPoints.sort(sortEventsDefault);
+        return filteredEvents.sort(sortEventsDefault);
       case SortType.PRICE:
-        return filteredPoints.sort(sortEventsByPrice);
+        return filteredEvents.sort(sortEventsByPrice);
       case SortType.TIME:
-        return filteredPoints.sort(sortEventsByTime);
+        return filteredEvents.sort(sortEventsByTime);
     }
 
-    return filteredPoints;
+    return filteredEvents;
+  }
+
+  get offers() {
+    return this.#eventModel.offers;
+  }
+
+  get destinations() {
+    return this.#eventModel.destinations;
   }
 
   init = () => {
@@ -69,12 +84,15 @@ export default class TripPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     switch(actionType) {
       case UserAction.UPDATE_EVENT:
+        this.#eventPresenter.get(update.id).setSaving();
         this.#eventModel.updateEvent(updateType, update);
         break;
       case UserAction.ADD_EVENT:
+        this.#eventNewPresenter.setSaving();
         this.#eventModel.addEvent(updateType, update);
         break;
       case UserAction.DELETE_EVENT:
+        this.#eventPresenter.get(update.id).setDeleting();
         this.#eventModel.deleteEvent(updateType, update);
         break;
       default:
@@ -95,6 +113,11 @@ export default class TripPresenter {
         this.#clearEvents({resetSortType: true});
         this.#renderTrip();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderTrip();
+        break;
       default:
         throw new Error('updateType not exist');
     }
@@ -110,11 +133,15 @@ export default class TripPresenter {
     this.#renderTrip();
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#componentList.element, RenderPosition.AFTERBEGIN);
+  };
+
   #renderSort = () => {
     this.#sortComponent = new SortView(this.#currentSortType);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
 
-    render(this.#sortComponent, this.#container);
+    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   };
 
   #renderEvent = (item) => {
@@ -133,6 +160,7 @@ export default class TripPresenter {
     this.#eventPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if(this.#noEventComponent){
       remove(this.#noEventComponent);
@@ -144,6 +172,13 @@ export default class TripPresenter {
   };
 
   #renderTrip = () => {
+    render(this.#componentList, this.#container);
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     if (!this.events.length) {
       this.#noEventComponent = new NoEventView(this.#filterType);
       render(this.#noEventComponent, this.#container);
@@ -151,7 +186,6 @@ export default class TripPresenter {
     }
 
     this.#renderSort();
-    render(this.#componentList, this.#container);
     this.events.forEach(this.#renderEvent);
     this.events.sort(sortEventsDefault);
   };
