@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import Observable from '../framework/observable.js';
 import { UpdateType } from '../utils/const.js';
 
@@ -34,7 +33,7 @@ export default class EventsModel extends Observable {
     } catch(err) {
       this.#events = [];
       this.#offers = [];
-      this.destinations = [];
+      this.#destinations = [];
     }
 
     this._notify(UpdateType.INIT);

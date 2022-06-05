@@ -4,10 +4,8 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { formatDate } from '../utils/date.js';
 import { OFFER_TYPES } from '../utils/const.js';
-import { getEventOffers, allCityes } from '../mock/generate-trip-event.js';
-import { DESTINATIONS } from '../mock/destinations.js';
 
-const createFormEditTemplate = (event) => {
+const createFormEditTemplate = (event, destinations, allOffers) => {
   const {
     dateFrom,
     dateTo,
@@ -21,6 +19,8 @@ const createFormEditTemplate = (event) => {
     isDeleting,
   } = event;
 
+  const allCityes = () => destinations.map((city) => city.name);
+  const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
   const allAvailableOptions = getEventOffers(type).offers;
   const hideOffersContainer = () => !allAvailableOptions.length ? 'visually-hidden' : '';
   const hideDestinationContainer = () => !destination.description && !destination.pictures.length
@@ -205,15 +205,19 @@ const createFormEditTemplate = (event) => {
 export default class FormEditView extends AbstractStatefulView {
   #dateFromPicker = null;
   #dateToPicker = null;
+  #destinations = null;
+  #offers = null;
 
-  constructor(event) {
+  constructor(event, destinations, offers) {
     super();
     this._state = FormEditView.parseDataToState(event);
+    this.#destinations = destinations;
+    this.#offers = offers;
     this.#setInnerHandlers();
   }
 
   get template() {
-    return createFormEditTemplate(this._state);
+    return createFormEditTemplate(this._state, this.#destinations, this.#offers);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -286,7 +290,7 @@ export default class FormEditView extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    const destination = DESTINATIONS.find((item) => item.name === evt.target.value);
+    const destination = this.#destinations.find((item) => item.name === evt.target.value);
 
     if (!destination){
       evt.target.value = '';

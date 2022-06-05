@@ -4,10 +4,8 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/airbnb.css';
 import dayjs from 'dayjs';
-import { getEventOffers, allCityes } from '../mock/generate-trip-event.js';
 import { OFFER_TYPES } from '../utils/const.js';
 import { formatDate } from '../utils/date.js';
-import { DESTINATIONS } from '../mock/destinations.js';
 
 const BLANK_EVENT = {
   basePrice: '',
@@ -22,7 +20,7 @@ const BLANK_EVENT = {
   type: 'sightseeing'
 };
 
-const createFormTemplate = (event = BLANK_EVENT) => {
+const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
   const {
     dateFrom,
     dateTo,
@@ -34,6 +32,8 @@ const createFormTemplate = (event = BLANK_EVENT) => {
     isSaving,
   } = event;
 
+  const allCityes = () => destinations.map((city) => city.name);
+  const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
   const allAvailableOptions = getEventOffers(type).offers;
   const hideOffersContainer = () => !allAvailableOptions.length ? 'visually-hidden' : '';
   const hideDestinationContainer = () => !destination.description && !destination.pictures.length
@@ -210,15 +210,19 @@ const createFormTemplate = (event = BLANK_EVENT) => {
 export default class FormCreateView extends AbstractStatefulView {
   #dateFromPicker = null;
   #dateToPicker = null;
+  #destinations = null;
+  #offers = null;
 
-  constructor() {
+  constructor(destinations, offers) {
     super();
     this._state = FormCreateView.parseDataToState(BLANK_EVENT);
     this.#setInnerHandlers();
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
   get template() {
-    return createFormTemplate(this._state);
+    return createFormTemplate(this._state, this.#destinations, this.#offers);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -279,7 +283,7 @@ export default class FormCreateView extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    const destination = DESTINATIONS.find((item) => item.name === evt.target.value);
+    const destination = this.#destinations.find((item) => item.name === evt.target.value);
 
     if (!destination){
       evt.target.value = '';

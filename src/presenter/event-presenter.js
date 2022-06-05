@@ -26,14 +26,14 @@ export default class EventPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (item) => {
+  init = (item, destinations, offers) => {
     this.#event = item;
 
     const prevEventComponent = this.#eventComponent;
     const prevFormEditComponent = this.#formEditComponent;
 
-    this.#eventComponent = new EventView(item);
-    this.#formEditComponent = new FormEditView(item);
+    this.#eventComponent = new EventView(item, offers);
+    this.#formEditComponent = new FormEditView(item, destinations, offers);
 
     this.#eventComponent.setEditClickHandler(this.#handleEditClick);
     this.#eventComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
@@ -89,6 +89,23 @@ export default class EventPresenter {
         isDeleting: true,
       });
     }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#formEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#formEditComponent.shake(resetFormState);
   };
 
   #replaceEventToForm = () => {

@@ -14,14 +14,14 @@ export default class EventNewPresenter {
     this.#changeData = changeData;
   }
 
-  init = (callback) => {
+  init = (callback, destinations, offers) => {
     this.#destroyCallback = callback;
 
     if (this.#formCreateComponent !== null) {
       return;
     }
 
-    this.#formCreateComponent = new FormCreateView();
+    this.#formCreateComponent = new FormCreateView(destinations, offers);
     this.#formCreateComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#formCreateComponent.setCancelClickHandler(this.#handleDeleteClick);
 
@@ -48,6 +48,17 @@ export default class EventNewPresenter {
       isDisabled: true,
       isSaving: true,
     });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#formCreateComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+      });
+    };
+
+    this.#formCreateComponent.shake(resetFormState);
   };
 
   #onEscKeyDownHandler = (evt) => {

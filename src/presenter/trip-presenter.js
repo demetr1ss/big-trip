@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import EventPresenter from './event-presenter.js';
 import EventNewPresenter from './event-new-presenter.js';
 import SortView from '../view/sort-view.js';
@@ -6,9 +5,15 @@ import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import LoadingView from '../view/loading-view.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { sortEventsDefault, sortEventsByPrice, sortEventsByTime } from '../utils/sorting.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../utils/const.js';
 import { filter } from '../utils/filters.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class TripPresenter {
   #container = null;
@@ -25,14 +30,12 @@ export default class TripPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(container, eventModel, filterModel) {
     this.#container = container;
     this.#eventModel = eventModel;
     this.#filterModel = filterModel;
-
-    console.log('offers', this.#eventModel.offers);
-    console.log('destinations', this.#eventModel.destinations);
 
     this.#eventNewPresenter = new EventNewPresenter(this.#componentList.element,
       this.#handleViewAction);
@@ -70,10 +73,10 @@ export default class TripPresenter {
     this.#renderTrip();
   };
 
-  createEvent = (callback) => {
+  createEvent = (callback, destinations, offers) => {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#eventNewPresenter.init(callback);
+    this.#eventNewPresenter.init(callback, destinations, offers);
   };
 
   #handleModeChange = () => {
@@ -81,23 +84,39 @@ export default class TripPresenter {
     this.#eventPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch(actionType) {
       case UserAction.UPDATE_EVENT:
         this.#eventPresenter.get(update.id).setSaving();
-        this.#eventModel.updateEvent(updateType, update);
+        try {
+          await this.#eventModel.updateEvent(updateType, update);
+        } catch {
+          this.#eventPresenter.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_EVENT:
         this.#eventNewPresenter.setSaving();
-        this.#eventModel.addEvent(updateType, update);
+        try {
+          await this.#eventModel.addEvent(updateType, update);
+        } catch {
+          this.#eventNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_EVENT:
         this.#eventPresenter.get(update.id).setDeleting();
-        this.#eventModel.deleteEvent(updateType, update);
+        try {
+          await this.#eventModel.deleteEvent(updateType, update);
+        } catch {
+          this.#eventPresenter.get(update.id).setAborting();
+        }
         break;
       default:
         throw new Error(`actionType: ${actionType} not exist`);
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -144,13 +163,13 @@ export default class TripPresenter {
     render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   };
 
-  #renderEvent = (item) => {
+  #renderEvent = (item, destinations, offers) => {
     const eventPresenter = new EventPresenter(
       this.#componentList.element,
       this.#handleViewAction,
       this.#handleModeChange
     );
-    eventPresenter.init(item);
+    eventPresenter.init(item, destinations, offers);
     this.#eventPresenter.set(item.id, eventPresenter);
   };
 
@@ -186,7 +205,7 @@ export default class TripPresenter {
     }
 
     this.#renderSort();
-    this.events.forEach(this.#renderEvent);
+    this.events.forEach((item) => this.#renderEvent(item, this.destinations, this.offers));
     this.events.sort(sortEventsDefault);
   };
 }
