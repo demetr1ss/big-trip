@@ -82,7 +82,7 @@ export default class EventsModel extends Observable {
     }
 
     try {
-      this.eventsApiService.deleteEvent(update);
+      await this.#eventsApiService.deleteEvent(update);
       this.#events = this.#events.filter((_item, index) => index !== deletedIndex);
       this._notify(updateType);
     } catch {

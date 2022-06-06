@@ -8,6 +8,8 @@ export default class EventNewPresenter {
   #changeData = null;
   #formCreateComponent = null;
   #destroyCallback = null;
+  #destinations = null;
+  #offers = null;
 
   constructor(eventListContainer, changeData) {
     this.#eventListContainer = eventListContainer;
@@ -21,7 +23,10 @@ export default class EventNewPresenter {
       return;
     }
 
-    this.#formCreateComponent = new FormCreateView(destinations, offers);
+    this.#destinations = destinations;
+    this.#offers = offers;
+
+    this.#formCreateComponent = new FormCreateView(this.#destinations, this.#offers);
     this.#formCreateComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#formCreateComponent.setCancelClickHandler(this.#handleDeleteClick);
 

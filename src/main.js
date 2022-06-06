@@ -25,7 +25,7 @@ const handleNewEventFormClose = () => {
 };
 
 const handleNewEventButtonClick = () => {
-  tripPresenter.createEvent(handleNewEventFormClose, eventsModel.destinations, eventsModel.offers);
+  tripPresenter.createEvent(handleNewEventFormClose);
   newEventButtonComponent.element.disabled = true;
 };
 
