@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import he from 'he';
 import flatpickr from 'flatpickr';
@@ -18,12 +17,10 @@ const BLANK_EVENT = {
     pictures: []
   },
   offers: [],
-  type: 'sightseeing'
+  type: 'sightseeing',
 };
 
 const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
-  console.log('destinations', destinations);
-  console.log('allOffers', allOffers);
   const {
     dateFrom,
     dateTo,
@@ -218,10 +215,10 @@ export default class FormCreateView extends AbstractStatefulView {
 
   constructor(destinations, offers) {
     super();
-    this._state = FormCreateView.parseDataToState(BLANK_EVENT);
-    this.#setInnerHandlers();
     this.#destinations = destinations;
     this.#offers = offers;
+    this._state = FormCreateView.parseDataToState(BLANK_EVENT);
+    this.#setInnerHandlers();
   }
 
   get template() {

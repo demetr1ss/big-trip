@@ -8,7 +8,7 @@ import EventsApiService from './api-services/api-service.js';
 import { render, RenderPosition } from './framework/render.js';
 
 const AUTHORIZATION = 'Basic hHh3h21DS93213ds';
-const END_POINT = 'https://17.ecmascript.pages.academy/big-trip/';
+const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
 
 const tripMainContainer = document.querySelector('.trip-main');
 const filtersContainer = tripMainContainer.querySelector('.trip-controls__filters');
@@ -25,7 +25,7 @@ const handleNewEventFormClose = () => {
 };
 
 const handleNewEventButtonClick = () => {
-  tripPresenter.createEvent(handleNewEventFormClose);
+  tripPresenter.createEvent(handleNewEventFormClose, eventsModel.destinations, eventsModel.offers);
   newEventButtonComponent.element.disabled = true;
 };
 
