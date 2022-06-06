@@ -1,6 +1,5 @@
 import { render, remove, RenderPosition } from '../framework/render.js';
 import FormCreateView from '../view/form-create-view.js';
-import { isEscapeKey } from '../utils/common.js';
 import { UserAction, UpdateType } from '../utils/const';
 
 export default class EventNewPresenter {
@@ -67,7 +66,7 @@ export default class EventNewPresenter {
   };
 
   #onEscKeyDownHandler = (evt) => {
-    if (isEscapeKey(evt)) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.destroy();
     }

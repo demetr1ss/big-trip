@@ -1,5 +1,4 @@
 import { render, replace, remove } from '../framework/render.js';
-import { isEscapeKey } from '../utils/common.js';
 import FormEditView from '../view/form-edit-view.js';
 import EventView from '../view/event-view.js';
 import { UserAction, UpdateType } from '../utils/const.js';
@@ -122,7 +121,7 @@ export default class EventPresenter {
   };
 
   #onEscKeyDownHandler = (evt) => {
-    if (isEscapeKey(evt)) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.#formEditComponent.reset(this.#event);
       this.#replaceFormToEvent();
