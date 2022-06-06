@@ -4,7 +4,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/airbnb.css';
 import dayjs from 'dayjs';
-import { OFFER_TYPES } from '../utils/const.js';
+import { EVENT_TYPES } from '../utils/const.js';
 import { formatDate } from '../utils/date.js';
 
 const BLANK_EVENT = {
@@ -66,7 +66,7 @@ const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
           <div class="event__type-list">
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Event type</legend>
-                  ${OFFER_TYPES.map((item) => (`
+                  ${EVENT_TYPES.map((item) => (`
                   <div class="event__type-item">
                     <input
                       id="event-type-${item}-1"

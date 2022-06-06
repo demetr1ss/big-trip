@@ -3,7 +3,7 @@ import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { formatDate } from '../utils/date.js';
-import { OFFER_TYPES } from '../utils/const.js';
+import { EVENT_TYPES } from '../utils/const.js';
 
 const createFormEditTemplate = (event, destinations, allOffers) => {
   const {
@@ -53,7 +53,7 @@ const createFormEditTemplate = (event, destinations, allOffers) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${OFFER_TYPES.map((item) => (`
+                ${EVENT_TYPES.map((item) => (`
                 <div class="event__type-item">
                   <input
                     id="event-type-${item}-${id}"

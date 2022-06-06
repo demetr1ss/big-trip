@@ -23,6 +23,6 @@ export const FilterType = {
   PAST: 'past',
 };
 
-export const OFFER_TYPES = [
+export const EVENT_TYPES = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];

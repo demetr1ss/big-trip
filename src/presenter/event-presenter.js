@@ -166,5 +166,4 @@ export default class EventPresenter {
       {...this.#event, isFavorite: !this.#event.isFavorite}
     );
   };
-
 }
