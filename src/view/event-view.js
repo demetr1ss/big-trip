@@ -1,8 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, getDurationTime } from '../utils/date.js';
-import { getEventOffers } from '../mock/generate-trip-event.js';
 
-const createEventTemplate = (point) => {
+const createEventTemplate = (event, allOffers) => {
   const {
     basePrice,
     destination,
@@ -11,8 +10,9 @@ const createEventTemplate = (point) => {
     dateTo,
     offers,
     isFavorite,
-  } = point;
+  } = event;
 
+  const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
   const choisenOptions = getEventOffers(type).offers;
 
   const favoriteClassName = isFavorite ?
@@ -87,14 +87,16 @@ const createEventTemplate = (point) => {
 
 export default class EventView extends AbstractView {
   #event = null;
+  #offers = null;
 
-  constructor(item) {
+  constructor(item, offers) {
     super();
     this.#event = item;
+    this.#offers = offers;
   }
 
   get template() {
-    return createEventTemplate(this.#event);
+    return createEventTemplate(this.#event, this.#offers);
   }
 
   setEditClickHandler = (callback) => {
@@ -117,5 +119,4 @@ export default class EventView extends AbstractView {
     evt.preventDefault();
     this._callback.favoriteClick();
   };
-
 }

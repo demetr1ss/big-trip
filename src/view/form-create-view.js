@@ -1,26 +1,26 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { getEventOffers, allCityes } from '../mock/generate-trip-event.js';
-import { OFFER_TYPES } from '../utils/const.js';
-import { formatDate } from '../utils/date.js';
-import { DESTINATIONS } from '../mock/destinations.js';
+import 'flatpickr/dist/themes/airbnb.css';
 import dayjs from 'dayjs';
+import { EVENT_TYPES } from '../utils/const.js';
+import { formatDate } from '../utils/date.js';
 
 const BLANK_EVENT = {
   basePrice: '',
   dateFrom: `${dayjs()}`,
-  dateTo: `${dayjs().add('1', 'M')}`,
+  dateTo: `${dayjs().add('14', 'd')}`,
   destination: {
     description: '',
     name: '',
     pictures: []
   },
   offers: [],
-  type: 'sightseeing'
+  type: 'sightseeing',
 };
 
-const createFormTemplate = (event = BLANK_EVENT) => {
+const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
   const {
     dateFrom,
     dateTo,
@@ -28,8 +28,12 @@ const createFormTemplate = (event = BLANK_EVENT) => {
     destination,
     basePrice,
     offers,
+    isDisabled,
+    isSaving,
   } = event;
 
+  const allCityes = () => destinations.map((city) => city.name);
+  const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
   const allAvailableOptions = getEventOffers(type).offers;
   const hideOffersContainer = () => !allAvailableOptions.length ? 'visually-hidden' : '';
   const hideDestinationContainer = () => !destination.description && !destination.pictures.length
@@ -56,12 +60,13 @@ const createFormTemplate = (event = BLANK_EVENT) => {
                 visually-hidden" 
                 id="event-type-toggle-1" 
                 type="checkbox"
+                ${isDisabled ? 'disabled' : ''}
               >
 
           <div class="event__type-list">
                 <fieldset class="event__type-group">
                   <legend class="visually-hidden">Event type</legend>
-                  ${OFFER_TYPES.map((item) => (`
+                  ${EVENT_TYPES.map((item) => (`
                   <div class="event__type-item">
                     <input
                       id="event-type-${item}-1"
@@ -93,10 +98,11 @@ const createFormTemplate = (event = BLANK_EVENT) => {
               class="event__input  event__input--destination" 
               id="event-destination-1" 
               type="text" name="event-destination" 
-              value="${destination.name}" 
+              value="${he.encode(destination.name)}" 
               list="destination-list-1"
               required
               autocomplete="off"
+              ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list-1">
               ${allCityes().map((city) => `<option value=${city}></option>`).join('')}
@@ -112,6 +118,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
             name="event-start-time" 
             value="${formatDate(dateFrom,'DD/MM/YY HH:mm')}"
             required
+            ${isDisabled ? 'disabled' : ''}
           >
             &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -122,6 +129,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
             name="event-end-time"
             value="${formatDate(dateTo,'DD/MM/YY HH:mm')}"
             required
+            ${isDisabled ? 'disabled' : ''}
           >
         </div>
 
@@ -139,11 +147,17 @@ const createFormTemplate = (event = BLANK_EVENT) => {
                 required
                 autocomplete="off"
                 min="1"
+                ${isDisabled ? 'disabled' : ''}
               >
             </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__save-btn  btn  btn--blue"
+          type="submit" 
+          ${isDisabled ? 'disabled' : ''}
+        >
+          ${isSaving ? 'Saving...' : 'Save'}
+        </button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>Cancel</button>
       </header>
 
       <section class="event__details">
@@ -162,6 +176,7 @@ const createFormTemplate = (event = BLANK_EVENT) => {
             type="checkbox" 
             name="event-offer-${item.title}" 
             ${checked}
+            ${isDisabled ? 'disabled' : ''}
           >
           <label class="event__offer-label" for=1-${item.id}>
             <span class="event__offer-title">${item.title}</span>
@@ -195,15 +210,19 @@ const createFormTemplate = (event = BLANK_EVENT) => {
 export default class FormCreateView extends AbstractStatefulView {
   #dateFromPicker = null;
   #dateToPicker = null;
+  #destinations = null;
+  #offers = null;
 
-  constructor() {
+  constructor(destinations, offers) {
     super();
+    this.#destinations = destinations;
+    this.#offers = offers;
     this._state = FormCreateView.parseDataToState(BLANK_EVENT);
     this.#setInnerHandlers();
   }
 
   get template() {
-    return createFormTemplate(this._state);
+    return createFormTemplate(this._state, this.#destinations, this.#offers);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -218,9 +237,9 @@ export default class FormCreateView extends AbstractStatefulView {
       .addEventListener('click', this.#cancelClickHandler);
   };
 
-  reset = (point) => {
+  reset = (event) => {
     this.updateElement(
-      FormCreateView.parseDataToState(point),
+      FormCreateView.parseDataToState(event),
     );
   };
 
@@ -261,26 +280,18 @@ export default class FormCreateView extends AbstractStatefulView {
     });
   };
 
-  #changeDestination = (destinationName) => {
-    const destination = DESTINATIONS.filter((item) => item.name === destinationName);
-
-    if (!destination.length) {
-      return;
-    }
-
-    return destination[0];
-  };
-
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    if (!this.#changeDestination(evt.target.value)){
+    const destination = this.#destinations.find((item) => item.name === evt.target.value);
+
+    if (!destination){
       evt.target.value = '';
       return;
     }
 
     this.updateElement({
-      destination: this.#changeDestination(evt.target.value)
+      destination,
     });
   };
 
@@ -371,6 +382,17 @@ export default class FormCreateView extends AbstractStatefulView {
     );
   };
 
-  static parseDataToState = (data) => ({ ...data });
-  static parseStateToData = (state) => ({ ...state });
+  static parseDataToState = (data) => ({ ...data,
+    isDisabled: false,
+    isSaving: false,
+  });
+
+  static parseStateToData = (state) => {
+    const data = {...state};
+
+    delete data.isDisabled;
+    delete data.isSaving;
+
+    return data;
+  };
 }

@@ -1,6 +1,4 @@
-
 import { render, replace, remove } from '../framework/render.js';
-import { isEscapeKey } from '../utils/common.js';
 import FormEditView from '../view/form-edit-view.js';
 import EventView from '../view/event-view.js';
 import { UserAction, UpdateType } from '../utils/const.js';
@@ -27,14 +25,14 @@ export default class EventPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (item) => {
+  init = (item, destinations, offers) => {
     this.#event = item;
 
     const prevEventComponent = this.#eventComponent;
     const prevFormEditComponent = this.#formEditComponent;
 
-    this.#eventComponent = new EventView(item);
-    this.#formEditComponent = new FormEditView(item);
+    this.#eventComponent = new EventView(item, offers);
+    this.#formEditComponent = new FormEditView(item, destinations, offers);
 
     this.#eventComponent.setEditClickHandler(this.#handleEditClick);
     this.#eventComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
@@ -52,7 +50,8 @@ export default class EventPresenter {
         replace(this.#eventComponent, prevEventComponent);
         break;
       case Mode.EDITING:
-        replace(this.#formEditComponent, prevFormEditComponent);
+        replace(this.#eventComponent, prevFormEditComponent);
+        this.#mode = Mode.DEFAULT;
         break;
       default:
         throw new Error(`${this.#mode} unknown`);
@@ -73,6 +72,41 @@ export default class EventPresenter {
     }
   };
 
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#formEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#formEditComponent.shake(resetFormState);
+  };
+
   #replaceEventToForm = () => {
     replace(this.#formEditComponent, this.#eventComponent);
     document.addEventListener('keydown', this.#onEscKeyDownHandler);
@@ -87,7 +121,7 @@ export default class EventPresenter {
   };
 
   #onEscKeyDownHandler = (evt) => {
-    if (isEscapeKey(evt)) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.#formEditComponent.reset(this.#event);
       this.#replaceFormToEvent();
@@ -116,13 +150,12 @@ export default class EventPresenter {
     this.#replaceFormToEvent();
   };
 
-  #handleDeleteClick = (point) => {
+  #handleDeleteClick = (event) => {
     this.#changeData(
       UserAction.DELETE_EVENT,
       UpdateType.MINOR,
-      point,
+      event,
     );
-    this.#replaceFormToEvent();
   };
 
   #handleFavoriteClick = () => {
@@ -132,5 +165,4 @@ export default class EventPresenter {
       {...this.#event, isFavorite: !this.#event.isFavorite}
     );
   };
-
 }

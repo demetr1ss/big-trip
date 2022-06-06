@@ -8,6 +8,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 export const SortType = {
@@ -22,6 +23,6 @@ export const FilterType = {
   PAST: 'past',
 };
 
-export const OFFER_TYPES = [
+export const EVENT_TYPES = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];

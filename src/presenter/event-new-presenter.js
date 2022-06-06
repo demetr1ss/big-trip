@@ -1,31 +1,31 @@
-
 import { render, remove, RenderPosition } from '../framework/render.js';
 import FormCreateView from '../view/form-create-view.js';
-import { isEscapeKey } from '../utils/common.js';
 import { UserAction, UpdateType } from '../utils/const';
-import { customAlphabet } from 'nanoid';
-
-const nanoid = customAlphabet('1234567890', 10);
 
 export default class EventNewPresenter {
   #eventListContainer = null;
   #changeData = null;
   #formCreateComponent = null;
   #destroyCallback = null;
+  #destinations = null;
+  #offers = null;
 
   constructor(eventListContainer, changeData) {
     this.#eventListContainer = eventListContainer;
     this.#changeData = changeData;
   }
 
-  init = (callback) => {
+  init = (callback, destinations, offers) => {
     this.#destroyCallback = callback;
 
     if (this.#formCreateComponent !== null) {
       return;
     }
 
-    this.#formCreateComponent = new FormCreateView();
+    this.#destinations = destinations;
+    this.#offers = offers;
+
+    this.#formCreateComponent = new FormCreateView(this.#destinations, this.#offers);
     this.#formCreateComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#formCreateComponent.setCancelClickHandler(this.#handleDeleteClick);
 
@@ -47,20 +47,37 @@ export default class EventNewPresenter {
     document.removeEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
+  setSaving = () => {
+    this.#formCreateComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#formCreateComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+      });
+    };
+
+    this.#formCreateComponent.shake(resetFormState);
+  };
+
   #onEscKeyDownHandler = (evt) => {
-    if (isEscapeKey(evt)) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.destroy();
     }
   };
 
-  #handleFormSubmit = (point) => {
+  #handleFormSubmit = (event) => {
     this.#changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {id: nanoid(), ...point},
+      event,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {
