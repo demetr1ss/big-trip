@@ -23,6 +23,12 @@ export const FilterType = {
   PAST: 'past',
 };
 
+export const NoEventsTextType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.FUTURE]: 'There are no future events now',
+};
+
 export const EVENT_TYPES = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];

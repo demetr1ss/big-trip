@@ -9,8 +9,8 @@ import { formatDate } from '../utils/date.js';
 
 const BLANK_EVENT = {
   basePrice: '',
-  dateFrom: `${dayjs()}`,
-  dateTo: `${dayjs().add('14', 'd')}`,
+  dateFrom: dayjs().toDate(),
+  dateTo: dayjs().add('14', 'd').toDate(),
   destination: {
     description: '',
     name: '',
@@ -32,7 +32,7 @@ const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
     isSaving,
   } = event;
 
-  const allCityes = () => destinations.map((city) => city.name);
+  const getAllCities = () => destinations.map((city) => city.name);
   const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
   const allAvailableOptions = getEventOffers(type).offers;
   const hideOffersContainer = () => !allAvailableOptions.length ? 'visually-hidden' : '';
@@ -105,7 +105,7 @@ const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
               ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list-1">
-              ${allCityes().map((city) => `<option value=${city}></option>`).join('')}
+              ${getAllCities().map((city) => `<option value="${city}"></option>`).join('')}
             </datalist>
           </div>
 

@@ -3,6 +3,7 @@ import FormEditView from '../view/form-edit-view.js';
 import EventView from '../view/event-view.js';
 import { UserAction, UpdateType } from '../utils/const.js';
 import { isDatesEqual } from '../utils/date.js';
+import { isEscapeKey } from '../utils/utils.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -121,7 +122,7 @@ export default class EventPresenter {
   };
 
   #onEscKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscapeKey(evt)) {
       evt.preventDefault();
       this.#formEditComponent.reset(this.#event);
       this.#replaceFormToEvent();
@@ -147,7 +148,6 @@ export default class EventPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update
     );
-    this.#replaceFormToEvent();
   };
 
   #handleDeleteClick = (event) => {
