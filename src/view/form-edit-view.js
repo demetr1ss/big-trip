@@ -19,7 +19,7 @@ const createFormEditTemplate = (event, destinations, allOffers) => {
     isDeleting,
   } = event;
 
-  const allCityes = () => destinations.map((city) => city.name);
+  const getAllCities = () => destinations.map((city) => city.name);
   const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
   const allAvailableOptions = getEventOffers(type).offers;
   const hideOffersContainer = () => !allAvailableOptions.length ? 'visually-hidden' : '';
@@ -92,7 +92,7 @@ const createFormEditTemplate = (event, destinations, allOffers) => {
               ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list-${id}">
-              ${allCityes().map((city) => `<option value=${city}></option>`).join('')}
+              ${getAllCities().map((city) => `<option value="${city}"></option>`).join('')}
             </datalist>
           </div>
 

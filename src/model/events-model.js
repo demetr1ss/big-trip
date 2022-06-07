@@ -26,10 +26,15 @@ export default class EventsModel extends Observable {
 
   init = async () => {
     try {
-      const events = await this.#eventsApiService.events;
-      this.#offers = await this.#eventsApiService.offers;
-      this.#destinations = await this.#eventsApiService.destinations;
+      const [events, offers, destinations] = await Promise.all([
+        this.#eventsApiService.events,
+        this.#eventsApiService.offers,
+        this.#eventsApiService.destinations
+      ]);
+
       this.#events = events.map(this.#adaptToClient);
+      this.#offers = offers;
+      this.#destinations = destinations;
     } catch(err) {
       this.#events = [];
       this.#offers = [];
@@ -57,7 +62,6 @@ export default class EventsModel extends Observable {
       ];
 
       this._notify(updateType, updatedEvent);
-
     } catch(err) {
       throw new Error('Can\'t update task');
     }
@@ -91,7 +95,8 @@ export default class EventsModel extends Observable {
   };
 
   #adaptToClient = (event) => {
-    const adaptedEvent = {...event,
+    const adaptedEvent = {
+      ...event,
       basePrice: event['base_price'],
       dateFrom: new Date(event['date_from']),
       dateTo: new Date(event['date_to']),
