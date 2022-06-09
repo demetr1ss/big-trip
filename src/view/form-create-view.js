@@ -6,6 +6,7 @@ import 'flatpickr/dist/themes/airbnb.css';
 import dayjs from 'dayjs';
 import { EVENT_TYPES } from '../utils/const.js';
 import { formatDate } from '../utils/date.js';
+import { getAllCities, getEventOffers } from '../utils/point.js';
 
 const BLANK_EVENT = {
   basePrice: '',
@@ -32,9 +33,7 @@ const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
     isSaving,
   } = event;
 
-  const getAllCities = () => destinations.map((city) => city.name);
-  const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
-  const allAvailableOptions = getEventOffers(type).offers;
+  const allAvailableOptions = getEventOffers(allOffers, type).offers;
   const hideOffersContainer = () => !allAvailableOptions.length ? 'visually-hidden' : '';
   const hideDestinationContainer = () => !destination.description && !destination.pictures.length
     ? 'visually-hidden'
@@ -105,7 +104,7 @@ const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
               ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list-1">
-              ${getAllCities().map((city) => `<option value="${city}"></option>`).join('')}
+              ${getAllCities(destinations).map((city) => `<option value="${city}"></option>`).join('')}
             </datalist>
           </div>
 
@@ -147,6 +146,7 @@ const createFormTemplate = (event = BLANK_EVENT, destinations, allOffers) => {
                 required
                 autocomplete="off"
                 min="1"
+                max="99999"
                 ${isDisabled ? 'disabled' : ''}
               >
             </div>
@@ -287,6 +287,15 @@ export default class FormCreateView extends AbstractStatefulView {
 
     if (!destination){
       evt.target.value = '';
+
+      this.updateElement({
+        destination: {
+          description: '',
+          name: '',
+          pictures: []
+        },
+      });
+
       return;
     }
 

@@ -4,6 +4,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { formatDate } from '../utils/date.js';
 import { EVENT_TYPES } from '../utils/const.js';
+import { getAllCities, getEventOffers } from '../utils/point.js';
 
 const createFormEditTemplate = (event, destinations, allOffers) => {
   const {
@@ -19,9 +20,7 @@ const createFormEditTemplate = (event, destinations, allOffers) => {
     isDeleting,
   } = event;
 
-  const getAllCities = () => destinations.map((city) => city.name);
-  const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
-  const allAvailableOptions = getEventOffers(type).offers;
+  const allAvailableOptions = getEventOffers(allOffers, type).offers;
   const hideOffersContainer = () => !allAvailableOptions.length ? 'visually-hidden' : '';
   const hideDestinationContainer = () => !destination.description && !destination.pictures.length
     ? 'visually-hidden'
@@ -92,7 +91,7 @@ const createFormEditTemplate = (event, destinations, allOffers) => {
               ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list-${id}">
-              ${getAllCities().map((city) => `<option value="${city}"></option>`).join('')}
+              ${getAllCities(destinations).map((city) => `<option value="${city}"></option>`).join('')}
             </datalist>
           </div>
 
@@ -134,6 +133,7 @@ const createFormEditTemplate = (event, destinations, allOffers) => {
               required
               autocomplete="off"
               min="1"
+              max="99999"
               ${isDisabled ? 'disabled' : ''}
             >
           </div>
@@ -294,6 +294,15 @@ export default class FormEditView extends AbstractStatefulView {
 
     if (!destination){
       evt.target.value = '';
+
+      this.updateElement({
+        destination: {
+          description: '',
+          name: '',
+          pictures: []
+        },
+      });
+
       return;
     }
 

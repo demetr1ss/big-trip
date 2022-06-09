@@ -5,8 +5,8 @@ dayjs.extend(duration);
 export const formatDate = (date, format) => dayjs(date).format(format);
 
 export const getDurationTime = (dateFrom, dateTo) => {
-  const endDate = dayjs(dateTo);
-  const startDate = dayjs(dateFrom);
+  const endDate = dayjs(dateTo).startOf('minute');
+  const startDate = dayjs(dateFrom).startOf('minute');
   const timeDuration = dayjs.duration(endDate.diff(startDate));
 
   if (timeDuration.days() > 0) {

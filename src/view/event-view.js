@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, getDurationTime } from '../utils/date.js';
+import { getEventOffers } from '../utils/point.js';
 
 const createEventTemplate = (event, allOffers) => {
   const {
@@ -12,9 +13,7 @@ const createEventTemplate = (event, allOffers) => {
     isFavorite,
   } = event;
 
-  const getEventOffers = (pointType) => allOffers.find((offer) => offer.type === pointType);
-  const choisenOptions = getEventOffers(type).offers;
-
+  const choisenOptions = getEventOffers(allOffers, type).offers;
   const favoriteClassName = isFavorite ?
     'event__favorite-btn  event__favorite-btn--active':
     'event__favorite-btn';
@@ -63,8 +62,7 @@ const createEventTemplate = (event, allOffers) => {
           &plus;&euro;&nbsp;
        <span class="event__offer-price">${item.price}</span>
       </li>`
-      : '' )
-      .join('')}
+      : '').join('')}
      </ul>
      <button class="${favoriteClassName}" type="button">
      <span class="visually-hidden">Add to favorite</span>

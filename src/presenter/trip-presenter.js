@@ -16,15 +16,16 @@ const TimeLimit = {
 };
 
 export default class TripPresenter {
+  #tripInfoPresenter = null;
   #container = null;
   #eventModel = null;
   #filterModel = null;
 
   #componentList = new EventListView();
   #loadingComponent = new LoadingView();
-  #eventPresenter = new Map();
   #sortComponent = null;
   #noEventComponent = null;
+  #eventPresenter = new Map();
   #eventNewPresenter = null;
 
   #currentSortType = SortType.DEFAULT;
