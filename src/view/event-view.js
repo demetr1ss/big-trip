@@ -103,14 +103,14 @@ export default class EventView extends AbstractView {
       .addEventListener('click', this.#editClickHandler);
   };
 
-  #editClickHandler = () => {
-    this._callback.editClick();
-  };
-
   setFavoriteClickHandler = (callback) => {
     this._callback.favoriteClick = callback;
     this.element.querySelector('.event__favorite-btn')
       .addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  #editClickHandler = () => {
+    this._callback.editClick();
   };
 
   #favoriteClickHandler = (evt) => {

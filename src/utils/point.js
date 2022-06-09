@@ -12,8 +12,7 @@ export const getOffersCost = (allOffers, selectedOffers, type) => {
     }
 
     return sum;
-  },
-  0);
+  }, 0);
 
   return eventOferrsCost;
 };

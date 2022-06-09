@@ -30,10 +30,6 @@ export default class TripInfoPresenter {
     remove(this.#prevTripInfoComponent);
   };
 
-  destroy = () => {
-    remove(this.#tripInfoComponent);
-  };
-
   #handleModelEvent = () => {
     if (this.#eventModel.events.length === 0) {
       remove(this.#tripInfoComponent);

@@ -4,8 +4,8 @@ import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import LoadingView from '../view/loading-view.js';
-import { remove, render, RenderPosition } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import { sortEventsDefault, sortEventsByPrice, sortEventsByTime } from '../utils/sorting.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../utils/const.js';
 import { filter } from '../utils/filters.js';
@@ -16,7 +16,6 @@ const TimeLimit = {
 };
 
 export default class TripPresenter {
-  #tripInfoPresenter = null;
   #container = null;
   #eventModel = null;
   #filterModel = null;
@@ -174,23 +173,6 @@ export default class TripPresenter {
     this.#eventPresenter.set(item.id, eventPresenter);
   };
 
-  #clearEvents = ({resetSortType = false} = {}) => {
-    this.#eventNewPresenter.destroy();
-    this.#eventPresenter.forEach((presenter) => presenter.destroy());
-    this.#eventPresenter.clear();
-
-    remove(this.#sortComponent);
-    remove(this.#loadingComponent);
-
-    if(this.#noEventComponent){
-      remove(this.#noEventComponent);
-    }
-
-    if (resetSortType) {
-      this.#currentSortType = SortType.DEFAULT;
-    }
-  };
-
   #renderTrip = () => {
     render(this.#componentList, this.#container);
 
@@ -208,5 +190,22 @@ export default class TripPresenter {
     this.#renderSort();
     this.events.forEach((item) => this.#renderEvent(item, this.destinations, this.offers));
     this.events.sort(sortEventsDefault);
+  };
+
+  #clearEvents = ({resetSortType = false} = {}) => {
+    this.#eventNewPresenter.destroy();
+    this.#eventPresenter.forEach((presenter) => presenter.destroy());
+    this.#eventPresenter.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#loadingComponent);
+
+    if(this.#noEventComponent){
+      remove(this.#noEventComponent);
+    }
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
   };
 }

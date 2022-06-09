@@ -1,12 +1,12 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { EVENT_TYPES } from '../utils/const.js';
+import { formatDate } from '../utils/date.js';
+import { getAllCities, getEventOffers } from '../utils/point.js';
 import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/airbnb.css';
 import dayjs from 'dayjs';
-import { EVENT_TYPES } from '../utils/const.js';
-import { formatDate } from '../utils/date.js';
-import { getAllCities, getEventOffers } from '../utils/point.js';
 
 const BLANK_EVENT = {
   basePrice: '',
@@ -282,12 +282,10 @@ export default class FormCreateView extends AbstractStatefulView {
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
-
     const destination = this.#destinations.find((item) => item.name === evt.target.value);
 
-    if (!destination){
+    if (!destination) {
       evt.target.value = '';
-
       this.updateElement({
         destination: {
           description: '',
@@ -341,7 +339,6 @@ export default class FormCreateView extends AbstractStatefulView {
       dateTo: userDateTo,
     });
   };
-
 
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-group')

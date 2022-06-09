@@ -108,19 +108,6 @@ export default class EventPresenter {
     this.#formEditComponent.shake(resetFormState);
   };
 
-  #replaceEventToForm = () => {
-    replace(this.#formEditComponent, this.#eventComponent);
-    document.addEventListener('keydown', this.#onEscKeyDownHandler);
-    this.#changeMode();
-    this.#mode = Mode.EDITING;
-  };
-
-  #replaceFormToEvent = () => {
-    replace(this.#eventComponent, this.#formEditComponent);
-    document.removeEventListener('keydown', this.#onEscKeyDownHandler);
-    this.#mode = Mode.DEFAULT;
-  };
-
   #onEscKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
@@ -140,8 +127,8 @@ export default class EventPresenter {
 
   #handleFormSubmit = (update) => {
     const isMinorUpdate =
-      !isDatesEqual(this.#event.dateFrom, update.dateFrom) ||
-      !isDatesEqual(this.#event.dateTo, update.dateTo);
+    !isDatesEqual(this.#event.dateFrom, update.dateFrom) ||
+    !isDatesEqual(this.#event.dateTo, update.dateTo);
 
     this.#changeData(
       UserAction.UPDATE_EVENT,
@@ -165,4 +152,18 @@ export default class EventPresenter {
       {...this.#event, isFavorite: !this.#event.isFavorite}
     );
   };
+
+  #replaceEventToForm = () => {
+    replace(this.#formEditComponent, this.#eventComponent);
+    document.addEventListener('keydown', this.#onEscKeyDownHandler);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
+  };
+
+  #replaceFormToEvent = () => {
+    replace(this.#eventComponent, this.#formEditComponent);
+    document.removeEventListener('keydown', this.#onEscKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
+  };
 }
+

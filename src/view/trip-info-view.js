@@ -7,7 +7,6 @@ const createTripInfoTemplate = (sortedEvents, tripCost, tripDestinations) => {
   const startDate = formatDate(sortedEvents[0].dateFrom, 'MMM DD');
   const endDate = formatDate(sortedEvents.at(-1).dateTo, 'MMM DD');
 
-
   return (
     `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
@@ -56,6 +55,5 @@ export default class TripInfoView extends AbstractView {
       sum += offersCost + basePrice;
 
       return sum;
-    },
-    0);
+    }, 0);
 }

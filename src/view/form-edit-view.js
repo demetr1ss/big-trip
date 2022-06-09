@@ -1,10 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import he from 'he';
-import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
 import { formatDate } from '../utils/date.js';
 import { EVENT_TYPES } from '../utils/const.js';
 import { getAllCities, getEventOffers } from '../utils/point.js';
+import he from 'he';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createFormEditTemplate = (event, destinations, allOffers) => {
   const {
@@ -289,12 +289,10 @@ export default class FormEditView extends AbstractStatefulView {
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
-
     const destination = this.#destinations.find((item) => item.name === evt.target.value);
 
     if (!destination){
       evt.target.value = '';
-
       this.updateElement({
         destination: {
           description: '',
@@ -327,7 +325,6 @@ export default class FormEditView extends AbstractStatefulView {
     evt.preventDefault();
     const currentId = Number(evt.target.id.split('-')[1]);
     const stateOffers = this._state.offers;
-
     const updatedOffers = stateOffers.includes(currentId)
       ? stateOffers.filter((item) => item !== currentId)
       : stateOffers.concat(currentId);
