@@ -13,7 +13,7 @@ const createEventTemplate = (event, allOffers) => {
     isFavorite,
   } = event;
 
-  const choisenOptions = getEventOffers(allOffers, type).offers;
+  const chosenOptions = getEventOffers(allOffers, type).offers;
   const favoriteClassName = isFavorite ?
     'event__favorite-btn  event__favorite-btn--active':
     'event__favorite-btn';
@@ -56,7 +56,7 @@ const createEventTemplate = (event, allOffers) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
      <ul class="event__selected-offers">
-     ${choisenOptions.map((item) => offers.includes(item.id)
+     ${chosenOptions.map((item) => offers.includes(item.id)
       ? `<li class="event__offer">
        <span class="event__offer-title">${item.title}</span>
           &plus;&euro;&nbsp;
