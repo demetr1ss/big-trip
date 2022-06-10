@@ -2,6 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { sortEventsDefault } from '../utils/sorting.js';
 import { getOffersCost } from '../utils/point.js';
 import { formatDate } from '../utils/date.js';
+import { TripInfoLength } from '../utils/const.js';
 
 const createTripInfoTemplate = (sortedEvents, tripCost, tripDestinations) => {
   const startDate = formatDate(sortedEvents[0].dateFrom, 'MMM DD');
@@ -38,15 +39,15 @@ export default class TripInfoView extends AbstractView {
     const firstPoint = this.#sortedEvents[0].destination.name;
     const endPoint = this.#sortedEvents.at(-1).destination.name;
 
-    if (this.#sortedEvents.length > 3) {
-      return `${firstPoint} &mdash; .&nbsp.&nbsp.  &mdash; ${endPoint}`;
+    if (this.#sortedEvents.length === TripInfoLength.MIN_LENGTH) {
+      return `${firstPoint}`;
     }
 
-    if (this.#sortedEvents.length === 3 || this.#sortedEvents.length === 2) {
+    if (this.#sortedEvents.length <= TripInfoLength.MAX_LENGTH) {
       return this.#sortedEvents.map(({destination}) => `${destination.name}`).join(' &mdash; ');
     }
 
-    return `${firstPoint}`;
+    return `${firstPoint} &mdash; .&nbsp.&nbsp.  &mdash; ${endPoint}`;
   };
 
   #getTripCost = () => this.#sortedEvents.reduce(

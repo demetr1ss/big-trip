@@ -32,3 +32,8 @@ export const NoEventsTextType = {
 export const EVENT_TYPES = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'
 ];
+
+export const TripInfoLength = {
+  MIN_LENGTH: 1,
+  MAX_LENGTH: 3,
+};
