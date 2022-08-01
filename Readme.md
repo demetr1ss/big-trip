@@ -1,4 +1,4 @@
-# Проект «Большое путешествие»
+# Проект «[Большое путешествие]»(https://demetr1ss.github.io/1892547-big-trip-17/)
 
 * Студент: [Дмитрий Телицын](https://up.htmlacademy.ru/ecmascript/17/user/1892547).
 * Наставник: [Алексей Хабиров](https://htmlacademy.ru/profile/id963185).
